@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace AWSLambda.LocalInvoke.Common
+namespace AWSLambda.AspNetCoreInterop.Util
 {
     public static class JsonUtil
     {

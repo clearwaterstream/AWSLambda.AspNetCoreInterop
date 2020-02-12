@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 
-namespace AWSLambda.LocalInvoke.Router
+namespace AWSLambda.AspNetCoreInterop.LocalRouter
 {
     class Program
     {
@@ -13,8 +13,9 @@ namespace AWSLambda.LocalInvoke.Router
         
         static void Main(string[] args)
         {
+            ConsoleUtil.WriteProgramTitle("AWS Lambda ASP .NET Core Interop");
+            
             AppDomain.CurrentDomain.ProcessExit += AppDomain_ProcessExit;
-
 
             Bootstrap();
 

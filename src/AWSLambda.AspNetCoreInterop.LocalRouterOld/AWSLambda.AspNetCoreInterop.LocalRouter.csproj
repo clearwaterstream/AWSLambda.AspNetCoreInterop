@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AWSLambda.LocalInvoke.Common\AWSLambda.LocalInvoke.Common.csproj" />
+    <ProjectReference Include="..\AWSLambda.AspNetCoreInterop.Util\AWSLambda.AspNetCoreInterop.Util.csproj" />
   </ItemGroup>
 
 </Project>

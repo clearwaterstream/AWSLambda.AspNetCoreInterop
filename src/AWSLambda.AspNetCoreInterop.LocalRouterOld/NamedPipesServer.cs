@@ -1,5 +1,5 @@
 ﻿using Amazon.Lambda.Model;
-using AWSLambda.LocalInvoke.Common;
+using AWSLambda.AspNetCoreInterop.Util;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -9,22 +9,24 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AWSLambda.LocalInvoke.Router
+namespace AWSLambda.AspNetCoreInterop.LocalRouter
 {
     public class NamedPipesServer : INamedPipesServer
     {
         readonly ILogger logger;
 
-        public string PipeName { get; set; } = "AWSLambda.LocalInvoke.Router";
+        public string RouterName { get; set; } = "AWSLambda.LocalInvoke.Router";
 
         public NamedPipesServer(ILogger<NamedPipesServer> logger)
         {
             this.logger = logger;
         }
 
-        public void Start(CancellationToken cancellationToken)
+        public Task Start(CancellationToken cancellationToken)
         {
             var maxNumOfServers = System.Environment.ProcessorCount;
+
+            logger.LogInformation($"Router name is {RouterName}");
 
             var tasks = new Task[maxNumOfServers];
 
@@ -36,14 +38,16 @@ namespace AWSLambda.LocalInvoke.Router
                 });
             }
 
-            Task.WhenAll(tasks);
+            var allT = Task.WhenAll(tasks);
+
+            return allT;
         }
 
         async Task RunServer(int maxNumOfServers, CancellationToken cancellationToken)
         {
             var threadId = Thread.CurrentThread.ManagedThreadId;
 
-            using var pipeServer = new NamedPipeServerStream(PipeName, PipeDirection.InOut, maxNumOfServers);
+            using var pipeServer = new NamedPipeServerStream(RouterName, PipeDirection.InOut, maxNumOfServers);
 
             if (cancellationToken.IsCancellationRequested)
                 return;
@@ -56,22 +60,21 @@ namespace AWSLambda.LocalInvoke.Router
 
                 logger.LogInformation($"client connected on thread {threadId}");
 
-                var invokeRequest = JsonUtil.Deserialize<InvokeRequest>(pipeServer);
+                var msg = ReadMessage(pipeServer);
+
+                logger.LogInformation($"msg received on thread {threadId}: {msg}");
 
             }
             while (!cancellationToken.IsCancellationRequested);
         }
 
-        public void Dispose()
+        string ReadMessage(Stream server)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
+            using(var sr = new StreamReader(server, Encoding.UTF8, true, 1024, true))
             {
+                var msg = sr.ReadToEnd();
+
+                return msg;
             }
         }
     }
