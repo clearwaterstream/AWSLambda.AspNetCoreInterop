@@ -2,7 +2,7 @@
 
 You have a fleet of ASP.NET Core apps deployed as AWS Lambda function. You need your apps to talk to each other, either via request-response or async invocation pattern.
 
-This library helps with facilitating inter-lambda communication by leveraging `AmazonLambdaClient` from AWS SDK.
+This library helps with facilitating inter-Lambda communication by leveraging `AmazonLambdaClient` from AWS SDK.
 
 ### Current Feature Set
 * Support for Lambdas deployed behind an API Gateway
