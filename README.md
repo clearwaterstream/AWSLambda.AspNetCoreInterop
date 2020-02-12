@@ -1,5 +1,12 @@
-# AWSLambda.LocalInvoke
+# AWSLambda.AspNetCoreInterop
 
-You have ASP.NET Core apps running locally via Kestrel. When deployed, the apps are wrapped in a Lambda. You use `AmazonLambdaClient` to `Invoke()` or `InvokeAsync()` another lambda. All works great, but how do you debug locally?
+You have a fleet of ASP.NET Core apps deployed as AWS Lambda function. You need your apps to talk to each other, either via request-response or async invocation pattern.
 
-This library allows for local invocation of your lambdas using Named Pipes. You need to run the Lambdas locally, as well as run a router that will route the calls to the appropriate lambda instance on your machine.
+This library helps with facilitating inter-lambda communication by leveraging `AmazonLambdaClient` from AWS SDK.
+
+### Current Feature Set
+* Support for Lambdas deployed behind an API Gateway
+* Support for local inter-Lambda communication (for local development)
+
+### Comming Soon
+* Support for Lambdas deployed behing an ALB
