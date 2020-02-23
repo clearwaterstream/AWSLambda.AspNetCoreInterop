@@ -6,7 +6,7 @@
   "profiles": {
     "AWSLambda.AspNetCoreInterop.LocalRouter": {
       "commandName": "Project",
-      "launchBrowser": true,
+      "commandLineArgs": "--urls http://localhost:5050",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

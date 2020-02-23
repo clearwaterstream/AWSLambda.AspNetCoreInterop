@@ -29,6 +29,11 @@ namespace AWSLambda.AspNetCoreInterop.LocalRouter
             Console.Read();
         }
 
+        public static void OnShuttingDown()
+        {            
+            appCtSource.Cancel();
+        }
+
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>

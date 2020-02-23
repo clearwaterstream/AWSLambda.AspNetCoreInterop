@@ -24,18 +24,25 @@ namespace AWSLambda.AspNetCoreInterop.LocalRouter
             {
                 c.TimestampFormat = "[HH:mm:ss.ffff] ";
             }));
+
+            services.AddSignalR();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var appLifetime = app.ApplicationServices.GetRequiredService<IHostApplicationLifetime>();
+
+            appLifetime.ApplicationStopping.Register(Program.OnShuttingDown);
+
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("AWS Lambda ASP .NET Core Interop");
-                });
+                endpoints.MapGet("/", HomePage.Render);
+
+                endpoints.MapGet("/clients", ClientsPage.Render);
+
+                endpoints.MapHub<PigeonPost>("/pigeon-post");
             });
         }
     }
