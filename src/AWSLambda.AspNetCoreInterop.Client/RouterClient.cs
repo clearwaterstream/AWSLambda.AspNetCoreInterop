@@ -2,6 +2,8 @@
 using Amazon.Lambda.AspNetCoreServer;
 using Amazon.Lambda.TestUtilities;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,38 +13,58 @@ namespace AWSLambda.AspNetCoreInterop.Client
 {
     public class RouterClient : IDisposable
     {
-        readonly HubConnection _hubConnection = null;
-        readonly string _lambdaName = null;
-        readonly APIGatewayProxyFunction _entryPoint = null;
+        readonly HubConnection hubConnection = null;
+        readonly ILogger<RouterClient> logger = null;
+        APIGatewayProxyFunction lambdaEntryPoint = null;
+        readonly IServiceProvider services = null;
 
-        public RouterClient(string lambdaName, APIGatewayProxyFunction entryPoint)
+        public RouterClient(ILogger<RouterClient> logger, IConfiguration configuration, IServiceProvider services)
         {
-            _lambdaName = lambdaName;
-            _entryPoint = entryPoint;
+            this.logger = logger;
+            this.services = services;
+            
+            var routerHostAddr = configuration["aws-lambda-interop:router-host"];
 
-            var url = "http://127.0.0.1:5000/pigeon-post";
+            if(string.IsNullOrEmpty(routerHostAddr))
+            {
+                throw new InteropClientException("Ensure aws-lambda-interop: { router-host: \"http(s)://router_addr:port\" } is set in appsettings.json");
+            }
 
-            _hubConnection = new HubConnectionBuilder()
-                .WithUrl(url)
+            var url = UriUtil.Combine(routerHostAddr, "pigeon-post");
+
+            this.logger.LogInformation($"router hub endpoint is {url}");
+
+            hubConnection = new HubConnectionBuilder()
+                .WithUrl(routerHostAddr)
                 .WithAutomaticReconnect()
                 .Build();
 
-            _hubConnection.On<APIGatewayProxyRequest>("receive-api-gateway-request", HandleIncomingRequest);
+            hubConnection.On<APIGatewayProxyRequest>("receive-api-gateway-request", HandleIncomingRequest);
         }
 
-        public async Task Connect()
+        public async Task RegisterWithRouter<TLambdaEntryPoint>(string lambdaName) where TLambdaEntryPoint: APIGatewayProxyFunction
         {
-            await _hubConnection.StartAsync();
+            lambdaEntryPoint = (APIGatewayProxyFunction)services.GetService(typeof(TLambdaEntryPoint));
+            
+            await hubConnection.StartAsync();
 
-            await _hubConnection.InvokeAsync("RegisterLambda", _lambdaName);
+            await hubConnection.InvokeAsync("RegisterLambda", lambdaName);
         }
 
         async Task HandleIncomingRequest(APIGatewayProxyRequest request)
         {
-            var lambdaContext = new TestLambdaContext();
-            // todo -- fill out the context to the extend possible
+            try
+            {
+                var lambdaContext = new TestLambdaContext();
+                // todo -- fill out the context to the extend possible
 
-            await _entryPoint.FunctionHandlerAsync(request, lambdaContext);
+                await lambdaEntryPoint.FunctionHandlerAsync(request, lambdaContext);
+            }
+            catch(Exception ex)
+            {
+                // todo - more infromative logging
+                logger.LogError(ex, $"Error invoking lambda handler for incoming {nameof(APIGatewayProxyRequest)}");
+            }
         }
         
         public void Dispose()
@@ -55,7 +77,7 @@ namespace AWSLambda.AspNetCoreInterop.Client
         {
             if(disposing)
             {
-                _hubConnection?.DisposeAsync().GetAwaiter().GetResult();
+                hubConnection?.DisposeAsync().GetAwaiter().GetResult();
             }
         }
     }
