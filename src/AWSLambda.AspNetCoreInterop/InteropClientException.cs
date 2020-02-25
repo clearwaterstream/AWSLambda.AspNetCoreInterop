@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AWSLambda.AspNetCoreInterop.Client
+namespace AWSLambda.AspNetCoreInterop
 {
     public class InteropClientException : Exception
     {

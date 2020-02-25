@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AWSLambda.AspNetCoreInterop.Client", "AWSLambda.AspNetCoreInterop.Client\AWSLambda.AspNetCoreInterop.Client.csproj", "{C5E9825B-A77C-416B-8240-3D51191D30D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AWSLambda.AspNetCoreInterop", "AWSLambda.AspNetCoreInterop\AWSLambda.AspNetCoreInterop.csproj", "{C5E9825B-A77C-416B-8240-3D51191D30D3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AWSLambda.AspNetCoreInterop.Client.Test", "AWSLambda.AspNetCoreInterop.Client.Test\AWSLambda.AspNetCoreInterop.Client.Test.csproj", "{496EF5D3-A17C-4A51-80A3-260468E863DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AWSLambda.AspNetCoreInterop.Test", "AWSLambda.AspNetCoreInterop.Test\AWSLambda.AspNetCoreInterop.Test.csproj", "{496EF5D3-A17C-4A51-80A3-260468E863DD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AWSLambda.AspNetCoreInterop.Util", "AWSLambda.AspNetCoreInterop.Util\AWSLambda.AspNetCoreInterop.Util.csproj", "{ABC8956A-BBFD-4E12-BC9F-97BBECC4E87E}"
 EndProject

@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -42,7 +41,7 @@ namespace AWSLambda.AspNetCoreInterop.LocalRouter
 
                 endpoints.MapGet("/clients", ClientsPage.Render);
 
-                endpoints.MapHub<PigeonPost>("/pigeon-post");
+                endpoints.MapHub<RequestRoutingHub>("/request-routing-hub");
             });
         }
     }

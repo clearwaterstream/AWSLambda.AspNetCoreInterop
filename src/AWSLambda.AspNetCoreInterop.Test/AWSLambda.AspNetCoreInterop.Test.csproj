@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AWSLambda.AspNetCoreInterop.Client\AWSLambda.AspNetCoreInterop.Client.csproj" />
+    <ProjectReference Include="..\AWSLambda.AspNetCoreInterop\AWSLambda.AspNetCoreInterop.csproj" />
   </ItemGroup>
 
 </Project>

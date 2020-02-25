@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 namespace AWSLambda.AspNetCoreInterop.LocalRouter
 {
     // route requests
-    public class PigeonPost : Hub
+    public class RequestRoutingHub : Hub
     {
-        readonly ILogger<PigeonPost> logger = null;
+        readonly ILogger<RequestRoutingHub> logger = null;
 
-        public PigeonPost(ILogger<PigeonPost> logger)
+        public RequestRoutingHub(ILogger<RequestRoutingHub> logger)
         {
             this.logger = logger;
         }
