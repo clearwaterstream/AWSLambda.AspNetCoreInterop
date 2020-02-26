@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AWSLambda.AspNetCoreInterop.LocalRouter
 {
+    using Microsoft.AspNetCore.Server.Kestrel.Core;
     using RouteHandlers;
     
     public class Startup
@@ -20,6 +21,11 @@ namespace AWSLambda.AspNetCoreInterop.LocalRouter
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
+
             services.AddLogging(opt => opt.AddConsole(c =>
             {
                 c.TimestampFormat = "[HH:mm:ss.ffff] ";
@@ -31,6 +37,8 @@ namespace AWSLambda.AspNetCoreInterop.LocalRouter
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseExceptionHandler(new ExceptionHandlerOptions() { ExceptionHandler = GlobalErrorHandler.ExceptionHandlerDelegate });
+
             app.UseRouting();
 
             var home = app.ApplicationServices.GetRequiredService<Home>();

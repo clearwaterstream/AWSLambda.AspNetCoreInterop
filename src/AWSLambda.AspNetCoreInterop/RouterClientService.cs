@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,7 +44,7 @@ namespace AWSLambda.AspNetCoreInterop
         {
             var resp = await Invoke(invokeRequest, nameof(APIGatewayProxyRequest), (s) => JsonUtil.Deserialize<APIGatewayProxyResponse>(s), cancellationToken);
 
-            if(resp.payload == null)
+            if (resp.payload == null)
             {
                 return new APIGatewayProxyResponse()
                 {
@@ -92,17 +93,19 @@ namespace AWSLambda.AspNetCoreInterop
 
             using (var reqMsg = new HttpRequestMessage(HttpMethod.Post, url))
             {
-                using(var ms = new MemoryStream())
+                using (var ms = new MemoryStream())
                 {
                     using (reqMsg.Content = new StreamContent(ms))
                     {
-                        JsonUtil.Serialize(ms, interopOptions, JsonUtil.LeanSerializerSettings);
+                        reqMsg.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                        
+                        JsonUtil.SerializeAndLeaveOpen(ms, interopOptions);
 
-                        reqMsg.Headers.Add("Content-Type", "application/json");
+                        ms.Position = 0;
 
                         using (var resp = await httpClient.SendAsync(reqMsg))
                         {
-                            if(!resp.IsSuccessStatusCode)
+                            if (!resp.IsSuccessStatusCode)
                             {
                                 throw new InteropException($"Error registering with router ${interopOptions.RouterUrl}. Status code {resp.StatusCode}. Ensure the router is running and is accessible.");
                             }

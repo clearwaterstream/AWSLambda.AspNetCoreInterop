@@ -1,11 +1,14 @@
 ﻿using Amazon.Lambda.AspNetCoreServer;
 using AWSLambda.AspNetCoreInterop;
 using AWSLambda.AspNetCoreInterop.Config;
+using AWSLambda.AspNetCoreInterop.Util;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -50,10 +53,18 @@ namespace Microsoft.AspNetCore.Hosting
 
             // safeguard
             if (!env.IsDevelopment() && opts.HandleIncomingRequestsInDevelopmentOnly == true)
-            {
                 throw new InteropException($"Handling of incoming requests is allowed in Development environment only. Consider setting {nameof(opts.HandleIncomingRequestsInDevelopmentOnly)} option to false.");
-            }
 
+            var serverAddresses = app.ServerFeatures.Get<IServerAddressesFeature>()?.Addresses;
+
+            if((serverAddresses == null || !serverAddresses.Any()) && string.IsNullOrEmpty(opts.LocalServerAddress))
+                throw new InteropException("Unable to determine which port to listen on for incoming proxied requests");
+
+            if (string.IsNullOrEmpty(opts.LocalServerAddress))
+            {
+                opts.LocalServerAddress = serverAddresses.First();
+            }
+            
             var logger = (ILogger<ProxiedRequestHandlerMiddleware>)app.ApplicationServices.GetService(typeof(ILogger<ProxiedRequestHandlerMiddleware>));
 
             app.MapWhen(context => context.Request.Path.StartsWithSegments(opts.HandlerPathForIncomingRequests), appBuilder => appBuilder.UseMiddleware<ProxiedRequestHandlerMiddleware>());
@@ -62,7 +73,9 @@ namespace Microsoft.AspNetCore.Hosting
 
             routerSvc.RegisterWithRouter().GetAwaiter().GetResult();
 
-            logger.LogInformation($"Registered with router {opts.RouterUrl}. Listening for incoming requests on ${opts.HandlerPathForIncomingRequests}");
+            var listenUrl = UriUtil.Combine(opts.LocalServerAddress, opts.HandlerPathForIncomingRequests);
+
+            logger.LogInformation($"Registered with router {opts.RouterUrl}. Listening for incoming requests on ${listenUrl}");
 
             return app;
         }
