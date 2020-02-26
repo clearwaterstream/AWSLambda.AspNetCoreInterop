@@ -14,7 +14,11 @@ namespace AWSLambda.AspNetCoreInterop.TestApp
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            var builder = CreateWebHostBuilder(args);
+
+            var host = builder.Build();
+
+            host.Run();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

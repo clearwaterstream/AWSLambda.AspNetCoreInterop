@@ -64,7 +64,7 @@ namespace Microsoft.AspNetCore.Hosting
 
             routerSvc.RegisterWithRouter().GetAwaiter().GetResult();
 
-            var listenUrl = UriUtil.Combine(opts.WebServerAppUrl, opts.HandlerPathForIncomingRequests);
+            var listenUrl = UriUtil.Combine(opts.ApplicationUrl, opts.HandlerPathForIncomingRequests);
 
             logger.LogInformation($"Registered with router {opts.RouterUrl}. Listening for incoming requests on ${listenUrl}");
 
