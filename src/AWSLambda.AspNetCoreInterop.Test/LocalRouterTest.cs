@@ -1,4 +1,5 @@
 ﻿using System;
+using Amazon.Lambda.AspNetCoreServer;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,13 +13,12 @@ namespace AWSLambda.AspNetCoreInterop.Test
     public class LocalRouterTest
     {
         [Fact]
-        public void RegisterWithRouter()
+        public void ListenForProxiedRequests()
         {
             var builder = WebHost.CreateDefaultBuilder().UseStartup<TestStartup>();
 
             using (var server = new TestServer(builder))
             {
-
             }
         }
     }
@@ -31,11 +31,25 @@ namespace AWSLambda.AspNetCoreInterop.Test
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAWSLambdaInteropClient(opts =>
+            {
+                opts.LambdaName = "test";
+                opts.RouterUrl = "http://localhost:5050";
+            });
         }
 
         public virtual void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseAWSLambdaInteropClient();
+            app.HandleIncomingAPIGatewayProxyRequests<ApiGatewayEntryPoint>(env);
+        }
+    }
 
+    class ApiGatewayEntryPoint : APIGatewayProxyFunction
+    {
+        protected override void Init(IWebHostBuilder builder)
+        {
+            builder.UseStartup<TestStartup>();
         }
     }
 }

@@ -9,15 +9,17 @@ namespace AWSLambda.AspNetCoreInterop.Config
     {
         string LambdaName { get; set; }
         string RouterUrl { get; set; }
-        string APIGatewayProxyRequestHandlerPath { get; set; }
-        string ApplicationLoadBalancerRequestHandlerPath { get; set; }
+        string DeploymentType { get; set; }
+        string HandlerPathForIncomingRequests { get; set; }
+        bool HandleIncomingRequestsInDevelopmentOnly { get; set; }
     }
 
     public class LambdaInteropOptions : ILambdaInteropOptions
     {
         public string LambdaName { get; set; }
         public string RouterUrl { get; set; }
-        public string APIGatewayProxyRequestHandlerPath { get; set; } = "/lambda-interop-handler-api-gateway";
-        public string ApplicationLoadBalancerRequestHandlerPath { get; set; } = "/lambda-interop-handler-alb";
+        public string DeploymentType { get; set; } = Config.DeploymentType.APIGateway;
+        public string HandlerPathForIncomingRequests { get; set; } = "/lambda-interop-handler";
+        public bool HandleIncomingRequestsInDevelopmentOnly { get; set; } = true;
     }
 }

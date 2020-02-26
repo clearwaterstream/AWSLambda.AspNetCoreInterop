@@ -7,9 +7,9 @@ using System.Text;
 
 namespace AWSLambda.AspNetCoreInterop
 {
-    public class ProxiedLambdaRequestHandlerMiddleware
+    public class ProxiedRequestHandlerMiddleware
     {
-        public ProxiedLambdaRequestHandlerMiddleware(IOptions<LambdaInteropOptions> config, ILogger<ProxiedLambdaRequestHandlerMiddleware> logger, IRouterHttpClient routerHttpClient)
+        public ProxiedRequestHandlerMiddleware(IOptions<LambdaInteropOptions> config, ILogger<ProxiedRequestHandlerMiddleware> logger, IRouterClientService routerHttpClient)
         {
 
         }

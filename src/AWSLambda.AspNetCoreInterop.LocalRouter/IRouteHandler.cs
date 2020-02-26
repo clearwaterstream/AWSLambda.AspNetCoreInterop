@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace AWSLambda.AspNetCoreInterop.LocalRouter
 {
-    public static class ClientsPage
+    public interface IRouteHandler
     {
-        public static Task Render(HttpContext context)
-        {
-            return context.Response.WriteAsync("todo");
-        }
+        public Task Invoke(HttpContext httpContext);
     }
 }

@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 
 namespace AWSLambda.AspNetCoreInterop.LocalRouter
 {
+    using RouteHandlers;
+    
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -22,19 +24,27 @@ namespace AWSLambda.AspNetCoreInterop.LocalRouter
             {
                 c.TimestampFormat = "[HH:mm:ss.ffff] ";
             }));
+
+            services.AddSingleton<Home>();
+            services.AddSingleton<Register>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseRouting();
 
+            var home = app.ApplicationServices.GetRequiredService<Home>();
+            var register = app.ApplicationServices.GetRequiredService<Register>();
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", HomePage.Render);
+                endpoints.MapGet("/", home.Invoke);
 
-                endpoints.MapGet("/clients", ClientsPage.Render);
+                //endpoints.MapGet("/clients", reqHandler.Clients);
 
-                //endpoints.MapHub<RequestRoutingHub>("/request-routing-hub");
+                endpoints.MapPost("/register", register.Invoke);
+
+                //endpoints.MapPost("/proxy-request", reqHandler.ProxyRequest);
             });
         }
     }

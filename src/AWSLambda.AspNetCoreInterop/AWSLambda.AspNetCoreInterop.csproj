@@ -13,4 +13,8 @@
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.1.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AWSLambda.AspNetCoreInterop.Util\AWSLambda.AspNetCoreInterop.Util.csproj" />
+  </ItemGroup>
+
 </Project>
