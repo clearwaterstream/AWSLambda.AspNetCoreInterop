@@ -3,7 +3,6 @@ using AWSLambda.AspNetCoreInterop;
 using AWSLambda.AspNetCoreInterop.Config;
 using AWSLambda.AspNetCoreInterop.Util;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -55,15 +54,7 @@ namespace Microsoft.AspNetCore.Hosting
             if (!env.IsDevelopment() && opts.HandleIncomingRequestsInDevelopmentOnly == true)
                 throw new InteropException($"Handling of incoming requests is allowed in Development environment only. Consider setting {nameof(opts.HandleIncomingRequestsInDevelopmentOnly)} option to false.");
 
-            var serverAddresses = app.ServerFeatures.Get<IServerAddressesFeature>()?.Addresses;
-
-            if((serverAddresses == null || !serverAddresses.Any()) && string.IsNullOrEmpty(opts.LocalServerAddress))
-                throw new InteropException("Unable to determine which port to listen on for incoming proxied requests");
-
-            if (string.IsNullOrEmpty(opts.LocalServerAddress))
-            {
-                opts.LocalServerAddress = serverAddresses.First();
-            }
+            ValidateInteropOptions(opts);
             
             var logger = (ILogger<ProxiedRequestHandlerMiddleware>)app.ApplicationServices.GetService(typeof(ILogger<ProxiedRequestHandlerMiddleware>));
 
@@ -73,11 +64,15 @@ namespace Microsoft.AspNetCore.Hosting
 
             routerSvc.RegisterWithRouter().GetAwaiter().GetResult();
 
-            var listenUrl = UriUtil.Combine(opts.LocalServerAddress, opts.HandlerPathForIncomingRequests);
+            var listenUrl = UriUtil.Combine(opts.WebServerAppUrl, opts.HandlerPathForIncomingRequests);
 
             logger.LogInformation($"Registered with router {opts.RouterUrl}. Listening for incoming requests on ${listenUrl}");
 
             return app;
+        }
+
+        static void ValidateInteropOptions(LambdaInteropOptions opts)
+        {
         }
     }
 }

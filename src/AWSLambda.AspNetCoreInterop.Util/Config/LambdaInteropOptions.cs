@@ -10,7 +10,7 @@ namespace AWSLambda.AspNetCoreInterop.Config
         string LambdaName { get; set; }
         string RouterUrl { get; set; }
         string DeploymentType { get; set; }
-        string LocalServerAddress { get; set; }
+        string WebServerAppUrl { get; set; }
         string HandlerPathForIncomingRequests { get; set; }
         bool HandleIncomingRequestsInDevelopmentOnly { get; set; }
     }
@@ -20,7 +20,7 @@ namespace AWSLambda.AspNetCoreInterop.Config
         public string LambdaName { get; set; }
         public string RouterUrl { get; set; }
         public string DeploymentType { get; set; } = Config.DeploymentType.APIGateway;
-        public string LocalServerAddress { get; set; }
+        public string WebServerAppUrl { get; set; }
         public string HandlerPathForIncomingRequests { get; set; } = "/lambda-interop-handler";
         public bool HandleIncomingRequestsInDevelopmentOnly { get; set; } = true;
     }
