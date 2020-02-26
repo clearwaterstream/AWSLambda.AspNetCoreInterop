@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace AWSLambda.AspNetCoreInterop.LocalRouter
@@ -23,16 +22,10 @@ namespace AWSLambda.AspNetCoreInterop.LocalRouter
             {
                 c.TimestampFormat = "[HH:mm:ss.ffff] ";
             }));
-
-            services.AddSignalR();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            var appLifetime = app.ApplicationServices.GetRequiredService<IHostApplicationLifetime>();
-
-            appLifetime.ApplicationStopping.Register(Program.OnShuttingDown);
-
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
@@ -41,7 +34,7 @@ namespace AWSLambda.AspNetCoreInterop.LocalRouter
 
                 endpoints.MapGet("/clients", ClientsPage.Render);
 
-                endpoints.MapHub<RequestRoutingHub>("/request-routing-hub");
+                //endpoints.MapHub<RequestRoutingHub>("/request-routing-hub");
             });
         }
     }

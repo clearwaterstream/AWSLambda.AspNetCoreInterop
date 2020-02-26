@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AWSLambda.AspNetCoreInterop
+namespace AWSLambda.AspNetCoreInterop.Util
 {
     public static class UriUtil
     {

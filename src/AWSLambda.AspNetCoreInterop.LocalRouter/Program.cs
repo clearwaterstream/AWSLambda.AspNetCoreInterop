@@ -10,7 +10,6 @@ namespace AWSLambda.AspNetCoreInterop.LocalRouter
     class Program
     {
         static ILogger<Program> logger;
-        static readonly CancellationTokenSource appCtSource = new CancellationTokenSource();
 
         static void Main(string[] args)
         {
@@ -27,11 +26,6 @@ namespace AWSLambda.AspNetCoreInterop.LocalRouter
             host.Run();
 
             Console.Read();
-        }
-
-        public static void OnShuttingDown()
-        {            
-            appCtSource.Cancel();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
