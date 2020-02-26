@@ -1,8 +1,9 @@
 ﻿using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.ApplicationLoadBalancerEvents;
 using Amazon.Lambda.AspNetCoreServer;
+using Amazon.Lambda.Core;
+using Amazon.Lambda.Model;
 using Amazon.Lambda.TestUtilities;
-using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -15,7 +16,6 @@ namespace AWSLambda.AspNetCoreInterop
 {
     public class LocalRouterClient : IDisposable
     {
-        readonly HubConnection hubConnection = null;
         readonly ILogger<LocalRouterClient> logger = null;
         APIGatewayProxyFunction lambdaEntryPoint = null;
         readonly IServiceProvider services = null;
@@ -33,30 +33,14 @@ namespace AWSLambda.AspNetCoreInterop
 
             var configuration = (IConfiguration)services.GetService(typeof(IConfiguration));
 
-            var routerHostAddr = configuration["aws-lambda-interop:router-host"];
+            var routerUrl = configuration["aws-lambda-interop:router-host"];
 
-            if(string.IsNullOrEmpty(routerHostAddr))
+            if(string.IsNullOrEmpty(routerUrl))
             {
                 throw new InteropClientException("Ensure aws-lambda-interop: { router-host: \"http(s)://router_addr:port\" } is set in appsettings.json");
             }
 
-            var url = UriUtil.Combine(routerHostAddr, "request-routing-hub");
-
-            logger.LogInformation($"router hub endpoint is {url}");
-
-            hubConnection = new HubConnectionBuilder()
-                .WithUrl(routerHostAddr)
-                .Build();
-
-            hubConnection.On<APIGatewayProxyRequest>("receive-api-gateway-request", async (req) =>
-            {
-                await HandleIncomingRequest(req);
-            });
-
-            hubConnection.On<ApplicationLoadBalancerRequest>("receive-alb-request", async (req) =>
-            {
-                await HandleIncomingRequest(req);
-            });
+            logger.LogInformation($"router hub endpoint is {routerUrl}");
         }
 
         public async Task RouteRequest(string destinationLambdaName, APIGatewayProxyRequest request, CancellationToken cancellationToken)
@@ -64,36 +48,30 @@ namespace AWSLambda.AspNetCoreInterop
             await hubConnection.InvokeAsync("RouteApiGatewayRequest", destinationLambdaName, request, cancellationToken);
         }
 
-        public async Task Connect()
-        {
-            lambdaEntryPoint = (APIGatewayProxyFunction)services.GetService(lambdaEntryPointType);
-            
-            await hubConnection.StartAsync();
-
-            await hubConnection.InvokeAsync("RegisterLambda", lambdaName);
-        }
-
-        async Task HandleIncomingRequest(APIGatewayProxyRequest request)
+        async Task HandleInvoke(InvokeRequest invokeRequest)
         {
             try
             {
                 var lambdaContext = new TestLambdaContext();
-                // todo -- fill out the context to the extend possible
 
-                await lambdaEntryPoint.FunctionHandlerAsync(request, lambdaContext);
+                // todo
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 // todo - more infromative logging
                 logger.LogError(ex, $"Error invoking lambda handler for incoming {nameof(APIGatewayProxyRequest)}");
             }
         }
 
+        async Task HandleIncomingRequest(APIGatewayProxyRequest request, ILambdaContext lambdaContext)
+        {
+            await lambdaEntryPoint.FunctionHandlerAsync(request, lambdaContext);
+        }
 
-        async Task HandleIncomingRequest(ApplicationLoadBalancerRequest request)
+        async Task HandleIncomingRequest(ApplicationLoadBalancerRequest request, ILambdaContext lambdaContext)
         {
             await Task.CompletedTask;
-            
+
             throw new NotImplementedException();
         }
 
@@ -107,7 +85,6 @@ namespace AWSLambda.AspNetCoreInterop
         {
             if(disposing)
             {
-                hubConnection?.DisposeAsync().GetAwaiter().GetResult();
             }
         }
     }
