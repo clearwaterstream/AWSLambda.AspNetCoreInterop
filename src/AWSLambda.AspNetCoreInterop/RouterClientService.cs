@@ -42,7 +42,7 @@ namespace AWSLambda.AspNetCoreInterop
 
         public async Task<APIGatewayProxyResponse> InvokeAPIGatewayProxyRequest(InvokeRequest invokeRequest, CancellationToken cancellationToken)
         {
-            var resp = await Invoke(invokeRequest, nameof(APIGatewayProxyRequest), (s) => JsonUtil.Deserialize<APIGatewayProxyResponse>(s), cancellationToken);
+            var resp = await Invoke(invokeRequest, "APIGatewayProxyRequest", (s) => JsonUtil.Deserialize<APIGatewayProxyResponse>(s), cancellationToken);
 
             if (resp.payload == null)
             {
@@ -63,7 +63,7 @@ namespace AWSLambda.AspNetCoreInterop
 
         async Task<(int statusCode, TResp payload)> Invoke<TResp>(InvokeRequest invokeRequest, string payloadType, Func<Stream, TResp> deserializePayload, CancellationToken cancellationToken)
         {
-            var url = $"{proxyRequestUrl}?invocationType={invokeRequest.InvocationType}&payloadType={payloadType}&source={interopOptions.LambdaName}";
+            var url = $"{proxyRequestUrl}?lambdaName={invokeRequest.FunctionName}invocationType={invokeRequest.InvocationType}&payloadType={payloadType}&source={interopOptions.LambdaName}";
 
             using (var reqMsg = new HttpRequestMessage(HttpMethod.Post, url))
             {
@@ -91,6 +91,22 @@ namespace AWSLambda.AspNetCoreInterop
         {
             var url = UriUtil.Combine(interopOptions.RouterUrl, "register");
 
+            try
+            {
+                await RegisterWithRouterInternal(url);
+            }
+            catch(InteropException)
+            {
+                throw;
+            }
+            catch(Exception ex)
+            {
+                throw new InteropException($"Error registering with router {interopOptions.RouterUrl}. Ensure the router is running and is accessible.", ex);
+            }
+        }
+
+        async Task RegisterWithRouterInternal(string url)
+        {
             using (var reqMsg = new HttpRequestMessage(HttpMethod.Post, url))
             {
                 using (var ms = new MemoryStream())
@@ -98,7 +114,7 @@ namespace AWSLambda.AspNetCoreInterop
                     using (reqMsg.Content = new StreamContent(ms))
                     {
                         reqMsg.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                        
+
                         JsonUtil.SerializeAndLeaveOpen(ms, interopOptions);
 
                         ms.Position = 0;
@@ -107,7 +123,7 @@ namespace AWSLambda.AspNetCoreInterop
                         {
                             if (!resp.IsSuccessStatusCode)
                             {
-                                throw new InteropException($"Error registering with router ${interopOptions.RouterUrl}. Status code {resp.StatusCode}. Ensure the router is running and is accessible.");
+                                throw new InteropException($"Error registering with router {interopOptions.RouterUrl}. Status code {resp.StatusCode}. Ensure the router is running and is accessible.");
                             }
                         }
                     }

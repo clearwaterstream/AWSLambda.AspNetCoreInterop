@@ -51,8 +51,6 @@ namespace AWSLambda.AspNetCoreInterop.LocalRouter
                 //endpoints.MapGet("/clients", reqHandler.Clients);
 
                 endpoints.MapPost("/register", register.Invoke);
-
-                //endpoints.MapPost("/proxy-request", reqHandler.ProxyRequest);
             });
         }
     }

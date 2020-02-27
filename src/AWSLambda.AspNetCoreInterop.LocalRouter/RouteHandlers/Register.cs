@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AWSLambda.AspNetCoreInterop.LocalRouter.RouteHandlers
+namespace AWSLambda.AspNetCoreInterop.Registry.RouteHandlers
 {
     public class Register : IRouteHandler
     {
@@ -25,9 +25,11 @@ namespace AWSLambda.AspNetCoreInterop.LocalRouter.RouteHandlers
 
             var opts = JsonUtil.Deserialize<LambdaInteropOptions>(request.Body);
 
+            ClientList.Instance.AddClient(opts);
+
             httpContext.Response.StatusCode = 200;
             
-            await httpContext.Response.WriteAsync(httpContext.Connection.RemotePort.ToString());
+            await httpContext.Response.WriteAsync("ok");
         }
     }
 }

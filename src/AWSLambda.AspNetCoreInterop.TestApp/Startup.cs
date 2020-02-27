@@ -34,11 +34,14 @@ namespace AWSLambda.AspNetCoreInterop.TestApp
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseAWSLambdaInteropClient();
-            app.HandleIncomingAPIGatewayProxyRequests<ApiGatewayEntryPoint>(env);
+            app.HandleIncomingAWSLambdaInvokeRequests(env);
 
             app.UseDeveloperExceptionPage();
             app.UseStaticFiles();
-            app.UseMvc();
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
+            });
         }
     }
 }

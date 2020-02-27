@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AWSLambda.AspNetCoreInterop.LocalRouter.RouteHandlers
+namespace AWSLambda.AspNetCoreInterop.Registry.RouteHandlers
 {
     public class Home : IRouteHandler
     {

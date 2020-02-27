@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -17,8 +18,20 @@ namespace Microsoft.Extensions.DependencyInjection
         public static void AddAWSLambdaInteropClient(this IServiceCollection services, Action<LambdaInteropOptions> config)
         {
             services.Configure(config);
+
+            services.AddSingleton<IApplicationUrlResolver, FromLaunchSettingsApplicationUrlResolver>();
             
             services.AddHttpClient<IRouterClientService, RouterClientService>();
+        }
+
+        public static void AddAPIGatewayProxyFunctionEntryPoint<TEntryPoint>(this IServiceCollection services) where TEntryPoint : APIGatewayProxyFunction, new()
+        {
+            services.AddSingleton<IAPIGatewayProxyFunctionActivator, APIGatewayProxyFunctionActivator<TEntryPoint>>();
+        }
+
+        public static void AddApplicationLoadBalancerFunctionEntryPoint<TEntryPoint>(this IServiceCollection services) where TEntryPoint : ApplicationLoadBalancerFunction, new()
+        {
+            services.AddSingleton<IApplicationLoadBalancerFunctionActivator, ApplicationLoadBalancerFunctionActivator<TEntryPoint>>();
         }
     }
 }
@@ -41,12 +54,18 @@ namespace Microsoft.AspNetCore.Hosting
         {
             var opts = GetInteropOptions(app.ApplicationServices);
 
+            if (string.IsNullOrEmpty(opts.LambdaName))
+                throw new InteropException($"Ensure {opts.LambdaName} is set in {nameof(LambdaInteropOptions)}");
+
+            if (string.IsNullOrEmpty(opts.RouterUrl))
+                throw new InteropException($"Ensure {opts.RouterUrl} is set in {nameof(LambdaInteropOptions)}");
+
             RouterClientServiceExtensions.Services = app.ApplicationServices;
 
             return app;
         }
 
-        public static IApplicationBuilder HandleIncomingAPIGatewayProxyRequests<TEntryPoint>(this IApplicationBuilder app, IHostingEnvironment env) where TEntryPoint : APIGatewayProxyFunction
+        public static IApplicationBuilder HandleIncomingAWSLambdaInvokeRequests(this IApplicationBuilder app, IHostingEnvironment env)
         {
             var opts = GetInteropOptions(app.ApplicationServices);
 
@@ -54,11 +73,11 @@ namespace Microsoft.AspNetCore.Hosting
             if (!env.IsDevelopment() && opts.HandleIncomingRequestsInDevelopmentOnly == true)
                 throw new InteropException($"Handling of incoming requests is allowed in Development environment only. Consider setting {nameof(opts.HandleIncomingRequestsInDevelopmentOnly)} option to false.");
 
-            ValidateInteropOptions(opts);
+            ValidateInteropOptions(opts, app.ApplicationServices);
             
-            var logger = (ILogger<ProxiedRequestHandlerMiddleware>)app.ApplicationServices.GetService(typeof(ILogger<ProxiedRequestHandlerMiddleware>));
+            var logger = (ILogger<HandleProxiedRequestMiddleware>)app.ApplicationServices.GetService(typeof(ILogger<HandleProxiedRequestMiddleware>));
 
-            app.MapWhen(context => context.Request.Path.StartsWithSegments(opts.HandlerPathForIncomingRequests), appBuilder => appBuilder.UseMiddleware<ProxiedRequestHandlerMiddleware>());
+            app.MapWhen(context => context.Request.Path.StartsWithSegments(opts.HandlerPathForIncomingRequests), appBuilder => appBuilder.UseMiddleware<HandleProxiedRequestMiddleware>());
 
             var routerSvc = (IRouterClientService)app.ApplicationServices.GetService(typeof(IRouterClientService));
 
@@ -71,8 +90,31 @@ namespace Microsoft.AspNetCore.Hosting
             return app;
         }
 
-        static void ValidateInteropOptions(LambdaInteropOptions opts)
+        static void ValidateInteropOptions(LambdaInteropOptions opts, IServiceProvider services)
         {
+            if(string.IsNullOrEmpty(opts.ApplicationUrl))
+            {
+                var appUrlResolver = (IApplicationUrlResolver)services.GetService(typeof(IApplicationUrlResolver));
+
+                opts.ApplicationUrl = appUrlResolver?.GetApplicationUrl();
+            }
+
+            var props = opts.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            foreach(var p in props)
+            {
+                var v = p.GetValue(opts);
+
+                if(v is string)
+                {
+                    var strVal = (string)v;
+
+                    if(string.IsNullOrEmpty(strVal))
+                    {
+                        throw new InteropException($"Ensure {p.Name} is set in {nameof(LambdaInteropOptions)}");
+                    }
+                }
+            }
         }
     }
 }
