@@ -32,5 +32,5 @@ var resp = await lambdaClient.InvokeAsync(invokeReq);
 
 resp = await invokeReq.RouteAPIGatewayProxyRequestLocally();
 
-// This will route the request MyLambdaFunction running on your local machine
+// This will route the request to MyLambdaFunction running on your local machine
 ```
