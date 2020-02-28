@@ -4,7 +4,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <PackAsTool>true</PackAsTool>
-    <ToolCommandName>lambda-mesh-catalog</ToolCommandName>
+    <ToolCommandName>lambda-mesh-cat</ToolCommandName>
     <PackageOutputPath>./nupkg</PackageOutputPath>
     <IsPackable>True</IsPackable>
     <Authors>Igor Krupin</Authors>
