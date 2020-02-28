@@ -17,20 +17,5 @@ namespace AWSLambda.AspNetCoreAppMesh.TestApp
         {
             builder.UseStartup<Startup>();
         }
-
-        protected override void MarshallRequest(InvokeFeatures features, APIGatewayProxyRequest apiGatewayRequest, ILambdaContext lambdaContext)
-        {
-            base.MarshallRequest(features, apiGatewayRequest, lambdaContext);
-        }
-
-        protected override void PostMarshallConnectionFeature(IHttpConnectionFeature aspNetCoreConnectionFeature, APIGatewayProxyRequest lambdaRequest, ILambdaContext lambdaContext)
-        {
-            base.PostMarshallConnectionFeature(aspNetCoreConnectionFeature, lambdaRequest, lambdaContext);
-        }
-
-        protected override void PostMarshallRequestFeature(IHttpRequestFeature aspNetCoreRequestFeature, APIGatewayProxyRequest lambdaRequest, ILambdaContext lambdaContext)
-        {
-            base.PostMarshallRequestFeature(aspNetCoreRequestFeature, lambdaRequest, lambdaContext);
-        }
     }
 }

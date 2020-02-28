@@ -24,6 +24,8 @@ namespace AWSLambda.AspNetCoreAppMesh.TestApp.Controllers
         [HttpPost]
         public async Task<IActionResult> MirrorHello()
         {
+            // call Hello() via routing the InvokeRequest locally (over http)
+
             var invokeReq = new InvokeRequest();
             invokeReq.FunctionName = "test";
             invokeReq.InvocationType = InvocationType.RequestResponse;
@@ -42,10 +44,9 @@ namespace AWSLambda.AspNetCoreAppMesh.TestApp.Controllers
                 invokeReq.PayloadStream = payloadStream;
 
                 var resp = await invokeReq.RouteAPIGatewayProxyRequestLocally();
+
+                return Content(resp.Body);
             }
-
-
-            return Content("ok");
         }
     }
 }

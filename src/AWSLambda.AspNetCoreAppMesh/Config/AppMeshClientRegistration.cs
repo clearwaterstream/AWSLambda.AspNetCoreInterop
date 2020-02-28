@@ -19,6 +19,8 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.Configure(config);
 
+            services.AddSingleton<IPairingTokenResolver, PairingTokenResolver>();
+
             services.AddSingleton<IApplicationUrlResolver, FromLaunchSettingsApplicationUrlResolver>();
 
             services.AddHttpClient<ICatalogRegistrarAgent, CatalogRegistrarAgent>();

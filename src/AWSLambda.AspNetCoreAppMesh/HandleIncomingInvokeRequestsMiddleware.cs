@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AWSLambda.AspNetCoreAppMesh
 {
@@ -19,6 +20,7 @@ namespace AWSLambda.AspNetCoreAppMesh
         readonly ILogger<HandleIncomingInvokeRequestsMiddleware> logger;
         readonly ILambdaAppMeshOptions opts;
         readonly IServiceProvider services;
+        readonly IPairingTokenResolver pairingTokenResolver;
 
         public HandleIncomingInvokeRequestsMiddleware(RequestDelegate next, ILogger<HandleIncomingInvokeRequestsMiddleware> logger, IOptions<LambdaAppMeshOptions> opts, IServiceProvider services)
         {
@@ -26,6 +28,8 @@ namespace AWSLambda.AspNetCoreAppMesh
             this.logger = logger;
             this.opts = opts.Value;
             this.services = services;
+
+            pairingTokenResolver = services.GetService<IPairingTokenResolver>();
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -39,7 +43,7 @@ namespace AWSLambda.AspNetCoreAppMesh
 
             logger.LogInformation($"Received {payloadType} request from {source}");
 
-            // todo -- handle dry run invocationType
+            // TODO -- handle dry run invocationType
 
             try
             {
@@ -77,6 +81,8 @@ namespace AWSLambda.AspNetCoreAppMesh
 
             var apiGatewayReq = JsonUtil.Deserialize<APIGatewayProxyRequest>(context.Request.Body);
 
+            InjectPairingToken(apiGatewayReq);
+
             var func = activator.EntryPoint();
 
             var lambdaContext = new TestLambdaContext()
@@ -84,13 +90,30 @@ namespace AWSLambda.AspNetCoreAppMesh
                 FunctionName = lambdaName
             };
 
-            // todo: fill context
+            // TODO: fill Lambda context
 
             var resp = await func.FunctionHandlerAsync(apiGatewayReq, lambdaContext);
 
             context.Response.StatusCode = resp.StatusCode;
 
             JsonUtil.SerializeAndLeaveOpen(context.Response.Body, resp);
+        }
+
+        // this is needed for IIS only ...
+        private void InjectPairingToken(APIGatewayProxyRequest apiGatewayReq)
+        {
+            if (pairingTokenResolver != null)
+            {
+                var tokenInfo = pairingTokenResolver.GetToken();
+
+                if (!string.IsNullOrEmpty(tokenInfo.token))
+                {
+                    if (apiGatewayReq.Headers == null)
+                        apiGatewayReq.Headers = new Dictionary<string, string>();
+
+                    apiGatewayReq.Headers[tokenInfo.headerName] = tokenInfo.token;
+                }
+            }
         }
     }
 }
