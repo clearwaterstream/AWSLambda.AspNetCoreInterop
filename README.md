@@ -34,3 +34,18 @@ resp = await invokeReq.RouteAPIGatewayProxyRequestLocally();
 
 // This will route the request to MyLambdaFunction running on your local machine
 ```
+## Getting Started
+
+Catalog installation
+
+```
+dotnet tool install -g AWSLambda.AspNetCoreAppMesh.Catalog
+```
+
+Run the catalog
+
+```
+lambda-mesh-cat --urls http://localhost:5050
+```
+
+The `--urls` param is optional. The tool will listed to port 5000 and 5001 by default.
