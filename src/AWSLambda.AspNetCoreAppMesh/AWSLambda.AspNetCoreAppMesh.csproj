@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Amazon.Lambda.APIGatewayEvents" Version="1.3.0" />
+    <PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="4.1.0" />
+    <PackageReference Include="Amazon.Lambda.TestUtilities" Version="1.1.0" />
+    <PackageReference Include="AWSSDK.Lambda" Version="3.3.108" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="2.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AWSLambda.AspNetCoreAppMesh.Util\AWSLambda.AspNetCoreAppMesh.Util.csproj" />
+  </ItemGroup>
+
+</Project>
