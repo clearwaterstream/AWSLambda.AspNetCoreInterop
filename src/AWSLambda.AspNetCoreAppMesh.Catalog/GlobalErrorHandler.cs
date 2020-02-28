@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+
 
 namespace AWSLambda.AspNetCoreAppMesh.Catalog
 {
@@ -18,7 +20,7 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
 
             var exceptionHandler = context.Features.Get<IExceptionHandlerFeature>();
 
-            var logger = (ILogger<GlobalErrorHandler>)context.RequestServices.GetService(typeof(ILogger<GlobalErrorHandler>));
+            var logger = context.RequestServices.GetService<ILogger<GlobalErrorHandler>>();
 
             string errorMsg;
 

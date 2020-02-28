@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AWSLambda.AspNetCoreAppMesh
 {
@@ -15,7 +16,7 @@ namespace AWSLambda.AspNetCoreAppMesh
 
         public static Task<APIGatewayProxyResponse> RouteAPIGatewayProxyRequestLocally(this InvokeRequest invokeRequest, CancellationToken cancellationToken = default)
         {
-            var marshallingSvc = (IRequestMarshallingService)Services.GetService(typeof(IRequestMarshallingService));
+            var marshallingSvc = Services.GetService<IRequestMarshallingService>();
 
             return marshallingSvc.MarshallAPIGatewayProxyRequest(invokeRequest, cancellationToken);
         }

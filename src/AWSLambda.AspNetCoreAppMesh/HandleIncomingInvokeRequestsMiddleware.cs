@@ -74,7 +74,7 @@ namespace AWSLambda.AspNetCoreAppMesh
 
         async Task HandleAPIGatewayProxyRequest(HttpContext context, string lambdaName)
         {
-            var activator = (IAPIGatewayProxyFunctionActivator)services.GetService(typeof(IAPIGatewayProxyFunctionActivator));
+            var activator = services.GetService<IAPIGatewayProxyFunctionActivator>();
 
             if (activator == null)
                 throw new AppMeshException($"Ensure AddAPIGatewayProxyFunctionEntryPoint() has been called in ConfigureServices() method of your Startup.");

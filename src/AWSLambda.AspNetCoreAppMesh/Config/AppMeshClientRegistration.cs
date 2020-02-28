@@ -48,7 +48,7 @@ namespace Microsoft.AspNetCore.Hosting
     {
         static LambdaAppMeshOptions GetAppMeshOptions(IServiceProvider services)
         {
-            var iopts = (IOptions<LambdaAppMeshOptions>)services.GetService(typeof(IOptions<LambdaAppMeshOptions>));
+            var iopts = services.GetService<IOptions<LambdaAppMeshOptions>>();
 
             if (iopts == null)
                 throw new AppMeshException($"Ensure {nameof(LambdaAppMeshClientService.AddAWSLambdaAppMeshClient)} has been called in ConfigureServices() method of your Startup.");
@@ -81,11 +81,11 @@ namespace Microsoft.AspNetCore.Hosting
 
             ValidateAppMeshOptions(opts, app.ApplicationServices);
 
-            var logger = (ILogger<HandleIncomingInvokeRequestsMiddleware>)app.ApplicationServices.GetService(typeof(ILogger<HandleIncomingInvokeRequestsMiddleware>));
+            var logger = app.ApplicationServices.GetService<ILogger<HandleIncomingInvokeRequestsMiddleware>>();
 
             app.MapWhen(context => context.Request.Path.StartsWithSegments(opts.HandlerPathForIncomingRequests), appBuilder => appBuilder.UseMiddleware<HandleIncomingInvokeRequestsMiddleware>());
 
-            var catalogAgent = (ICatalogRegistrarAgent)app.ApplicationServices.GetService(typeof(ICatalogRegistrarAgent));
+            var catalogAgent = app.ApplicationServices.GetService<ICatalogRegistrarAgent>();
 
             catalogAgent.RegisterFunction().GetAwaiter().GetResult();
 
@@ -100,7 +100,7 @@ namespace Microsoft.AspNetCore.Hosting
         {
             if (string.IsNullOrEmpty(opts.ApplicationUrl))
             {
-                var appUrlResolver = (IApplicationUrlResolver)services.GetService(typeof(IApplicationUrlResolver));
+                var appUrlResolver = services.GetService<IApplicationUrlResolver>();
 
                 opts.ApplicationUrl = appUrlResolver?.GetApplicationUrl();
             }
