@@ -1,4 +1,4 @@
-# AWSLambda.AspNetCoreAppMesh
+# aws-lambda-aspdotnetcore-appmesh
 
 You have a fleet of serverless ASP.NET Core apps configured as AWS Lambda functions. While debugging on your local machine, you need your apps to talk to each other, either via request-response or [async invocation pattern](https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html).
 
