@@ -26,13 +26,12 @@ invokeReq.Payload = JsonConvert.SerializeObject(apiGatewayReq);
 
 var lambdaClient = new AmazonLambdaClient(); // region, creds
 
-var resp = await lambdaClient.InvokeAsync(invokeReq);
+var resp = await lambdaClient.InvokeAsync(invokeReq); // When running in AWS environment
 
-// --- OR ---
+// --- OR, WHEN DEBUGGING LOCALLY ---
+// This will route the request to MyLambdaFunction running on your local machine
 
 resp = await invokeReq.RouteAPIGatewayProxyRequestLocally();
-
-// This will route the request to MyLambdaFunction running on your local machine
 ```
 ## Getting Started
 
