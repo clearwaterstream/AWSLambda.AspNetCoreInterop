@@ -38,7 +38,7 @@ resp = await invokeReq.RouteAPIGatewayProxyRequestLocally();
 
 #### Catalog installation
 
-Catalog keeps track of all the running ASP.NET Core Applications on your local machine that choose to register to recieve incoming `Invoke` requests.
+Catalog keeps track of all the running ASP.NET Core Applications on your local machine that choose to register to recieve incoming `InvokeRequest` requests.
 
 ```
 dotnet tool install -g AWSLambda.AspNetCoreAppMesh.Catalog
