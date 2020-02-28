@@ -36,7 +36,9 @@ resp = await invokeReq.RouteAPIGatewayProxyRequestLocally();
 ```
 ## Getting Started
 
-Catalog installation
+#### Catalog installation
+
+Catalog keeps track of all the running ASP.NET Core Applications on your local machine that choose to register to recieve incoming `Invoke` requests.
 
 ```
 dotnet tool install -g AWSLambda.AspNetCoreAppMesh.Catalog
@@ -48,4 +50,4 @@ Run the catalog
 lambda-mesh-cat --urls http://localhost:5050
 ```
 
-The `--urls` param is optional. The tool will listed to port 5000 and 5001 by default.
+The `--urls` param is optional. The tool will listen on port 5000 and 5001 by default.
