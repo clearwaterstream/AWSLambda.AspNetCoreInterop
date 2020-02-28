@@ -27,7 +27,7 @@ namespace AWSLambda.AspNetCoreInterop.TestApp
             services.AddAWSLambdaInteropClient(opts =>
             {
                 opts.LambdaName = "test";
-                opts.RouterUrl = "http://localhost:5050";
+                opts.RegistryUrl = "http://localhost:5050";
             });
         }
 

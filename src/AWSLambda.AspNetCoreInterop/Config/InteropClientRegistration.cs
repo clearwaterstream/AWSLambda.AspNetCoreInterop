@@ -20,8 +20,10 @@ namespace Microsoft.Extensions.DependencyInjection
             services.Configure(config);
 
             services.AddSingleton<IApplicationUrlResolver, FromLaunchSettingsApplicationUrlResolver>();
-            
-            services.AddHttpClient<IRouterClientService, RouterClientService>();
+
+            services.AddHttpClient<IFunctionRegistryClient, FunctionRegistryClient>();
+
+            services.AddHttpClient<IRequestMarshallingService, RequestMarshallingService>();
         }
 
         public static void AddAPIGatewayProxyFunctionEntryPoint<TEntryPoint>(this IServiceCollection services) where TEntryPoint : APIGatewayProxyFunction, new()
@@ -57,10 +59,10 @@ namespace Microsoft.AspNetCore.Hosting
             if (string.IsNullOrEmpty(opts.LambdaName))
                 throw new InteropException($"Ensure {opts.LambdaName} is set in {nameof(LambdaInteropOptions)}");
 
-            if (string.IsNullOrEmpty(opts.RouterUrl))
-                throw new InteropException($"Ensure {opts.RouterUrl} is set in {nameof(LambdaInteropOptions)}");
+            if (string.IsNullOrEmpty(opts.RegistryUrl))
+                throw new InteropException($"Ensure {opts.RegistryUrl} is set in {nameof(LambdaInteropOptions)}");
 
-            RouterClientServiceExtensions.Services = app.ApplicationServices;
+            RequestMarshallingServiceExtensions.Services = app.ApplicationServices;
 
             return app;
         }
@@ -74,25 +76,25 @@ namespace Microsoft.AspNetCore.Hosting
                 throw new InteropException($"Handling of incoming requests is allowed in Development environment only. Consider setting {nameof(opts.HandleIncomingRequestsInDevelopmentOnly)} option to false.");
 
             ValidateInteropOptions(opts, app.ApplicationServices);
-            
-            var logger = (ILogger<HandleProxiedRequestMiddleware>)app.ApplicationServices.GetService(typeof(ILogger<HandleProxiedRequestMiddleware>));
 
-            app.MapWhen(context => context.Request.Path.StartsWithSegments(opts.HandlerPathForIncomingRequests), appBuilder => appBuilder.UseMiddleware<HandleProxiedRequestMiddleware>());
+            var logger = (ILogger<HandleIncomingInvokeRequestsMiddleware>)app.ApplicationServices.GetService(typeof(ILogger<HandleIncomingInvokeRequestsMiddleware>));
 
-            var routerSvc = (IRouterClientService)app.ApplicationServices.GetService(typeof(IRouterClientService));
+            app.MapWhen(context => context.Request.Path.StartsWithSegments(opts.HandlerPathForIncomingRequests), appBuilder => appBuilder.UseMiddleware<HandleIncomingInvokeRequestsMiddleware>());
 
-            routerSvc.RegisterWithRouter().GetAwaiter().GetResult();
+            var funcRegistryClient = (IFunctionRegistryClient)app.ApplicationServices.GetService(typeof(IFunctionRegistryClient));
+
+            funcRegistryClient.RegisterFunction().GetAwaiter().GetResult();
 
             var listenUrl = UriUtil.Combine(opts.ApplicationUrl, opts.HandlerPathForIncomingRequests);
 
-            logger.LogInformation($"Registered with router {opts.RouterUrl}. Listening for incoming requests on ${listenUrl}");
+            logger.LogInformation($"Registered with registry {opts.RegistryUrl}. Listening for incoming requests on ${listenUrl}");
 
             return app;
         }
 
         static void ValidateInteropOptions(LambdaInteropOptions opts, IServiceProvider services)
         {
-            if(string.IsNullOrEmpty(opts.ApplicationUrl))
+            if (string.IsNullOrEmpty(opts.ApplicationUrl))
             {
                 var appUrlResolver = (IApplicationUrlResolver)services.GetService(typeof(IApplicationUrlResolver));
 
@@ -101,15 +103,15 @@ namespace Microsoft.AspNetCore.Hosting
 
             var props = opts.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-            foreach(var p in props)
+            foreach (var p in props)
             {
                 var v = p.GetValue(opts);
 
-                if(v is string)
+                if (v is string)
                 {
                     var strVal = (string)v;
 
-                    if(string.IsNullOrEmpty(strVal))
+                    if (string.IsNullOrEmpty(strVal))
                     {
                         throw new InteropException($"Ensure {p.Name} is set in {nameof(LambdaInteropOptions)}");
                     }

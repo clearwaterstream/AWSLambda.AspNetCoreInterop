@@ -17,27 +17,25 @@ using System.Threading.Tasks;
 
 namespace AWSLambda.AspNetCoreInterop
 {
-    public interface IRouterClientService
+    public interface IRequestMarshallingService
     {
         Task<APIGatewayProxyResponse> InvokeAPIGatewayProxyRequest(InvokeRequest invokeRequest, CancellationToken cancellationToken);
         Task<ApplicationLoadBalancerResponse> InvokeApplicationLoadBalancerRequest(InvokeRequest invokeRequest, CancellationToken cancellationToken);
-        Task RegisterWithRouter();
     }
 
-    public class RouterClientService : IRouterClientService
+    public class RequestMarshallingService : IRequestMarshallingService
     {
         readonly HttpClient httpClient;
-        readonly ILogger<RouterClientService> logger;
+        readonly ILogger<RequestMarshallingService> logger;
         readonly LambdaInteropOptions interopOptions;
-        readonly string proxyRequestUrl;
+        readonly IFunctionRegistryClient functionRegistryClient;
 
-        public RouterClientService(HttpClient httpClient, ILogger<RouterClientService> logger, IOptions<LambdaInteropOptions> opts)
+        public RequestMarshallingService(HttpClient httpClient, ILogger<RequestMarshallingService> logger, IOptions<LambdaInteropOptions> opts, IFunctionRegistryClient functionRegistryClient)
         {
             this.httpClient = httpClient;
             this.logger = logger;
             interopOptions = opts.Value;
-
-            proxyRequestUrl = UriUtil.Combine(interopOptions.RouterUrl, "proxy-request");
+            this.functionRegistryClient = functionRegistryClient;
         }
 
         public async Task<APIGatewayProxyResponse> InvokeAPIGatewayProxyRequest(InvokeRequest invokeRequest, CancellationToken cancellationToken)
@@ -63,7 +61,11 @@ namespace AWSLambda.AspNetCoreInterop
 
         async Task<(int statusCode, TResp payload)> Invoke<TResp>(InvokeRequest invokeRequest, string payloadType, Func<Stream, TResp> deserializePayload, CancellationToken cancellationToken)
         {
-            var url = $"{proxyRequestUrl}?lambdaName={invokeRequest.FunctionName}invocationType={invokeRequest.InvocationType}&payloadType={payloadType}&source={interopOptions.LambdaName}";
+            var destLambdaOpts = await functionRegistryClient.GetFunctionInfo(invokeRequest.FunctionName);
+
+            var invokeHandlerUrl = UriUtil.Combine(destLambdaOpts.ApplicationUrl, destLambdaOpts.HandlerPathForIncomingRequests);
+
+            var url = $"{invokeHandlerUrl}?lambdaName={invokeRequest.FunctionName}invocationType={invokeRequest.InvocationType}&payloadType={payloadType}&source={interopOptions.LambdaName}";
 
             using (var reqMsg = new HttpRequestMessage(HttpMethod.Post, url))
             {
@@ -81,50 +83,6 @@ namespace AWSLambda.AspNetCoreInterop
                             var deserialized = deserializePayload(respStream);
 
                             return ((int)resp.StatusCode, deserialized);
-                        }
-                    }
-                }
-            }
-        }
-
-        public async Task RegisterWithRouter()
-        {
-            var url = UriUtil.Combine(interopOptions.RouterUrl, "register");
-
-            try
-            {
-                await RegisterWithRouterInternal(url);
-            }
-            catch(InteropException)
-            {
-                throw;
-            }
-            catch(Exception ex)
-            {
-                throw new InteropException($"Error registering with router {interopOptions.RouterUrl}. Ensure the router is running and is accessible.", ex);
-            }
-        }
-
-        async Task RegisterWithRouterInternal(string url)
-        {
-            using (var reqMsg = new HttpRequestMessage(HttpMethod.Post, url))
-            {
-                using (var ms = new MemoryStream())
-                {
-                    using (reqMsg.Content = new StreamContent(ms))
-                    {
-                        reqMsg.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-                        JsonUtil.SerializeAndLeaveOpen(ms, interopOptions);
-
-                        ms.Position = 0;
-
-                        using (var resp = await httpClient.SendAsync(reqMsg))
-                        {
-                            if (!resp.IsSuccessStatusCode)
-                            {
-                                throw new InteropException($"Error registering with router {interopOptions.RouterUrl}. Status code {resp.StatusCode}. Ensure the router is running and is accessible.");
-                            }
                         }
                     }
                 }

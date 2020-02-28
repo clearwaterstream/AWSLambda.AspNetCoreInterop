@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace AWSLambda.AspNetCoreInterop.LocalRouter
+namespace AWSLambda.AspNetCoreInterop.Registry
 {
     using Microsoft.AspNetCore.Server.Kestrel.Core;
     using RouteHandlers;
@@ -33,6 +33,7 @@ namespace AWSLambda.AspNetCoreInterop.LocalRouter
 
             services.AddSingleton<Home>();
             services.AddSingleton<Register>();
+            services.AddSingleton<GetFunctionInfo>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -43,12 +44,15 @@ namespace AWSLambda.AspNetCoreInterop.LocalRouter
 
             var home = app.ApplicationServices.GetRequiredService<Home>();
             var register = app.ApplicationServices.GetRequiredService<Register>();
+            var getFunctionInfo = app.ApplicationServices.GetRequiredService<GetFunctionInfo>();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGet("/", home.Invoke);
 
-                //endpoints.MapGet("/clients", reqHandler.Clients);
+                //endpoints.MapGet("/registered-functions", ...);
+
+                endpoints.MapGet("/function-info", getFunctionInfo.Invoke);
 
                 endpoints.MapPost("/register", register.Invoke);
             });

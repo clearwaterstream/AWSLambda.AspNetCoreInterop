@@ -1,5 +1,4 @@
 ﻿using Amazon.Lambda.APIGatewayEvents;
-using Amazon.Lambda.AspNetCoreServer;
 using Amazon.Lambda.TestUtilities;
 using AWSLambda.AspNetCoreInterop.Config;
 using AWSLambda.AspNetCoreInterop.Util;
@@ -14,14 +13,14 @@ using System.Threading.Tasks;
 
 namespace AWSLambda.AspNetCoreInterop
 {
-    public class HandleProxiedRequestMiddleware
+    public class HandleIncomingInvokeRequestsMiddleware
     {
         readonly RequestDelegate next;
-        readonly ILogger<HandleProxiedRequestMiddleware> logger;
+        readonly ILogger<HandleIncomingInvokeRequestsMiddleware> logger;
         readonly ILambdaInteropOptions opts;
         readonly IServiceProvider services;
 
-        public HandleProxiedRequestMiddleware(RequestDelegate next, ILogger<HandleProxiedRequestMiddleware> logger, IOptions<LambdaInteropOptions> opts, IServiceProvider services)
+        public HandleIncomingInvokeRequestsMiddleware(RequestDelegate next, ILogger<HandleIncomingInvokeRequestsMiddleware> logger, IOptions<LambdaInteropOptions> opts, IServiceProvider services)
         {
             this.next = next;
             this.logger = logger;
@@ -34,10 +33,13 @@ namespace AWSLambda.AspNetCoreInterop
             var req = context.Request;
 
             string lambdaName = req.Query["lambdaName"];
+            string invocationType = req.Query["invocationType"];
             string payloadType = req.Query["payloadType"];
             string source = req.Query["source"];
 
             logger.LogInformation($"Received {payloadType} request from {source}");
+
+            // todo -- handle dry run
 
             try
             {
@@ -84,8 +86,6 @@ namespace AWSLambda.AspNetCoreInterop
             var resp = await func.FunctionHandlerAsync(apiGatewayReq, lambdaContext);
 
             context.Response.StatusCode = resp.StatusCode;
-
-            AWSUtils.SetHeadersCollection(context.Response.Headers, resp.Headers, resp.MultiValueHeaders);
 
             JsonUtil.SerializeAndLeaveOpen(context.Response.Body, resp);
         }

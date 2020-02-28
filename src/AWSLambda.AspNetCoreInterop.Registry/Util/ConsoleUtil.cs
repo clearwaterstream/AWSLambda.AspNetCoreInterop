@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AWSLambda.AspNetCoreInterop.LocalRouter.Util
+namespace AWSLambda.AspNetCoreInterop.Registry.Util
 {
     public static class ConsoleUtil
     {

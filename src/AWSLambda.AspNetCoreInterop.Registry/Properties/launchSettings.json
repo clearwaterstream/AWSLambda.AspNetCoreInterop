@@ -4,9 +4,8 @@
     "anonymousAuthentication": true
   },
   "profiles": {
-    "AWSLambda.AspNetCoreInterop.LocalRouter": {
+    "AWSLambda.AspNetCoreInterop.Registry": {
       "commandName": "Project",
-      "commandLineArgs": "--urls http://localhost:5050",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

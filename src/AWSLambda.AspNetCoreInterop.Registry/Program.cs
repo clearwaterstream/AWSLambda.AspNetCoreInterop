@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using AWSLambda.AspNetCoreInterop.Registry.Util;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 
-namespace AWSLambda.AspNetCoreInterop.LocalRouter
+namespace AWSLambda.AspNetCoreInterop.Registry
 {
     class Program
     {
@@ -13,7 +14,7 @@ namespace AWSLambda.AspNetCoreInterop.LocalRouter
 
         static void Main(string[] args)
         {
-            ConsoleUtil.WriteProgramTitle("AWS Lambda ASP .NET Core Interop");
+            ConsoleUtil.WriteProgramTitle("AWS Lambda ASP .NET Core Interop - Function Registry");
 
             try
             {

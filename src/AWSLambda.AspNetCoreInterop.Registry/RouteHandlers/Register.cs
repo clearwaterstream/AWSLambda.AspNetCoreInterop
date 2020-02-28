@@ -25,7 +25,7 @@ namespace AWSLambda.AspNetCoreInterop.Registry.RouteHandlers
 
             var opts = JsonUtil.Deserialize<LambdaInteropOptions>(request.Body);
 
-            ClientList.Instance.AddClient(opts);
+            Registrar.Instance.RegisterFunction(opts);
 
             httpContext.Response.StatusCode = 200;
             

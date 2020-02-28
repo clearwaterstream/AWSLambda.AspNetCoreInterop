@@ -18,7 +18,7 @@ namespace AWSLambda.AspNetCoreInterop.Registry.RouteHandlers
         
         public Task Invoke(HttpContext httpContext)
         {
-            return httpContext.Response.WriteAsync("AWS Lambda ASP .NET Core Interop");
+            return httpContext.Response.WriteAsync("AWS Lambda ASP .NET Core Interop - Function Registry");
         }
     }
 }

@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 
 namespace AWSLambda.AspNetCoreInterop
 {
-    public static class RouterClientServiceExtensions
+    public static class RequestMarshallingServiceExtensions
     {
         public static IServiceProvider Services { get; set; }
 
         public static Task<APIGatewayProxyResponse> InvokeAPIGatewayProxyRequestLocally(this InvokeRequest invokeRequest, CancellationToken cancellationToken)
         {
-            var routerSvc = (IRouterClientService)Services.GetService(typeof(IRouterClientService));
+            var marshallingSvc = (IRequestMarshallingService)Services.GetService(typeof(IRequestMarshallingService));
 
-            return routerSvc.InvokeAPIGatewayProxyRequest(invokeRequest, cancellationToken);
+            return marshallingSvc.InvokeAPIGatewayProxyRequest(invokeRequest, cancellationToken);
         }
 
         public static Task<ApplicationLoadBalancerResponse> InvokeApplicationLoadBalancerRequestLocally(this InvokeRequest invokeRequest, CancellationToken cancellationToken)
