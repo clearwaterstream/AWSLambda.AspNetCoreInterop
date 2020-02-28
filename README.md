@@ -5,3 +5,32 @@ You have a fleet of serverless ASP.NET Core apps configured as AWS Lambda functi
 ### Roadmap
 * Support for Lambdas deployed behind an ALB
 * NET 3.1 support (waiting for AWS)
+
+### Example
+
+```csharp
+Say you have an existing Invoke code such as this:
+
+var invokeReq = new InvokeRequest();
+invokeReq.FunctionName = "MyLambdaFunction";
+invokeReq.InvocationType = InvocationType.RequestResponse;
+// ... other params
+
+var apiGatewayReq = new APIGatewayProxyRequest()
+{
+    HttpMethod = "GET",
+    Path = "/Home/Index"
+};
+
+invokeReq.Payload = JsonConvert.SerializeObject(apiGatewayReq);
+
+var lambdaClient = new AmazonLambdaClient(); // region, creds
+
+var resp = await lambdaClient.InvokeAsync(invokeReq);
+
+// --- OR ---
+
+resp = await invokeReq.RouteAPIGatewayProxyRequestLocally();
+
+// This will route the request MyLambdaFunction running on your local machine
+```
