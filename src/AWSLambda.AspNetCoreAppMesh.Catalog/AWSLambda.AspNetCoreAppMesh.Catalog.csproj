@@ -12,11 +12,13 @@
     <PackageTags>aws, lambda, interop, app mesh, microservice communication, catalog</PackageTags>
     <Description>Catalog component to support registration of AWS Lambda functions running on the local machine</Description>
     <RepositoryUrl>https://github.com/clearwaterstream/aws-lambda-aspdotnetcore-appmesh.git</RepositoryUrl>
-    <PackageReleaseNotes>v1.0.0 - Initial Release</PackageReleaseNotes>
+    <PackageReleaseNotes>v1.0.1 - Don't wait for user input on exit
+v1.0.0 - Initial Release</PackageReleaseNotes>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/clearwaterstream/aws-lambda-aspdotnetcore-appmesh</PackageProjectUrl>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <Copyright>Copyright (c) $([System.DateTime]::Now.Year) Igor Krupin</Copyright>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

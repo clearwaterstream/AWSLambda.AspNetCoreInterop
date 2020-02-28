@@ -26,8 +26,6 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
             {
                 Console.Error.WriteLine($"Startup error: {ex.ToString()}");
             }
-
-            Console.Read();
         }
 
         static void Run(string[] args)
@@ -38,7 +36,7 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
             {
                 logger = host.Services.GetService<ILogger<Program>>();
 
-                logger.LogInformation("Router bootstrapped");
+                logger.LogInformation("Catalog bootstrapped");
 
                 host.Run();
             }
