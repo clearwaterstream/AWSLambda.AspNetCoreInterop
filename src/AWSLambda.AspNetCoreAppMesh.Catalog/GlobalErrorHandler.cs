@@ -26,7 +26,7 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
 
             if (exceptionHandler == null)
             {
-                errorMsg = "Unknown error occured. ExceptionHandlerFeature is not available";
+                errorMsg = $"Unknown error occured. {nameof(IExceptionHandlerFeature)} is not available";
 
                 logger.LogError(errorMsg);
 
