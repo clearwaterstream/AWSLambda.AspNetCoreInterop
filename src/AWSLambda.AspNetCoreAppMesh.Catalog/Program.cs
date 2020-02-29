@@ -12,7 +12,7 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
     {
         static ILogger<Program> logger;
 
-        public static readonly string Title = "AWS Lambda ASP .NET Core App Mesh - Catalog";
+        public static readonly string Title = "AWS Lambda ASP.NET Core App Mesh - Catalog";
 
         static void Main(string[] args)
         {
