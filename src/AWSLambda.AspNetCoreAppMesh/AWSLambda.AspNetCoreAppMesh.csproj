@@ -7,7 +7,7 @@
     <PackageProjectUrl>https://github.com/clearwaterstream/aws-lambda-aspdotnetcore-appmesh</PackageProjectUrl>
     <RepositoryUrl>https://github.com/clearwaterstream/aws-lambda-aspdotnetcore-appmesh.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>aws, lambda, interop, app mesh, microservice communication, catalog, sidecar</PackageTags>
+    <PackageTags>aws, lambda, interop, app mesh, microservice communication, catalog, aspnetcore</PackageTags>
     <PackageReleaseNotes>v1.0.1 - Intital Release</PackageReleaseNotes>
     <Copyright></Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>

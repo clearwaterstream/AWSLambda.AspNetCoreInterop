@@ -9,7 +9,7 @@
     <IsPackable>True</IsPackable>
     <Authors>Igor Krupin</Authors>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>aws, lambda, interop, app mesh, microservice communication, catalog, sidecar</PackageTags>
+    <PackageTags>aws, lambda, interop, app mesh, microservice communication, catalog, aspdotnet</PackageTags>
     <Description>Catalog component to support registration of AWS Lambda functions running on the local machine</Description>
     <RepositoryUrl>https://github.com/clearwaterstream/aws-lambda-aspdotnetcore-appmesh.git</RepositoryUrl>
     <PackageReleaseNotes>v1.0.2 - Donwgraded AWSSDK.Lambda to align with Lambda .NET Core 2.1 LTS runtime environment
