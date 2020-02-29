@@ -1,7 +1,5 @@
 # Amazon Lambda ASP .NET Core App Mesh - Catalog
 
-## Getting Started
-
 ### Catalog installation
 
 Catalog keeps track of all the running ASP.NET Core Applications on your local machine that choose to register to recieve incoming `InvokeRequest` requests.
