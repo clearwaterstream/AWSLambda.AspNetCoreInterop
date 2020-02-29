@@ -26,11 +26,27 @@ invokeReq.Payload = JsonConvert.SerializeObject(apiGatewayReq);
 
 var lambdaClient = new AmazonLambdaClient(); // region, creds
 
-var resp = await lambdaClient.InvokeAsync(invokeReq);
+var resp = await lambdaClient.InvokeAsync(invokeReq); // When running in AWS environment
 
-// --- OR ---
+// --- OR, WHEN DEBUGGING LOCALLY ---
+// This will route the request to MyLambdaFunction running on your local machine
 
 resp = await invokeReq.RouteAPIGatewayProxyRequestLocally();
-
-// This will route the request to MyLambdaFunction running on your local machine
 ```
+## Getting Started
+
+#### Catalog installation
+
+Catalog keeps track of all the running ASP.NET Core Applications on your local machine that choose to register to recieve incoming `InvokeRequest` requests.
+
+```
+dotnet tool install -g AWSLambda.AspNetCoreAppMesh.Catalog
+```
+
+Run the catalog
+
+```
+lambda-mesh-cat --urls http://localhost:5050
+```
+
+The `--urls` param is optional. The tool will listen on port 5000 and 5001 by default.
