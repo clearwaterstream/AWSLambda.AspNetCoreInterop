@@ -36,7 +36,7 @@ v1.0.0 - Initial Release</PackageReleaseNotes>
 
   <ItemGroup>
     <Compile Include="..\Shared\JsonUtil.cs" Link="Util\JsonUtil.cs" />
-    <Compile Include="..\Shared\LambdaInteropOptions.cs" Link="Util\LambdaInteropOptions.cs" />
+    <Compile Include="..\Shared\LambdaAppMeshOptions.cs" Link="Util\LambdaAppMeshOptions.cs" />
     <Compile Include="..\Shared\UriUtil.cs" Link="Util\UriUtil.cs" />
   </ItemGroup>
 
