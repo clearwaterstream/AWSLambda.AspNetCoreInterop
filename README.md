@@ -77,3 +77,21 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 ```
 
 Now, you can call `RouteAPIGatewayProxyRequestLocally()` on your `InvokeRequest` requests. In order for `InvokeRequest` to be processed, the receiver ASP.NET Core Lambda must be running on your machine, and must have registered with the Catalog tool.
+
+### Configuring Your ASP.NET Core Application to receive incoming `InvokeRequest` requests
+
+*Ensure Catalog tool (lambda-mesh-cat) is running prior to to launching your ASP.NET Core app*
+
+In Startup.cs
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{	
+	services.AddAPIGatewayProxyFunctionEntryPoint<LambdaEntryPoint>(); // your APIGatewayProxyFunction entry point
+}
+
+public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+{
+	app.HandleIncomingAWSLambdaInvokeRequests(env);
+}
+```
