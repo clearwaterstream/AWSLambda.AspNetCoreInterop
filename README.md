@@ -4,6 +4,7 @@ You have a fleet of serverless ASP.NET Core apps configured as AWS Lambda functi
 
 ### Roadmap
 * Validate the solution on OSX + Visual Studio for Mac
+* Catalog: remember the last used --urls setting
 * Support for Lambdas deployed behind an ALB
 * NET 3.1 support (dependant on AWS)
 
