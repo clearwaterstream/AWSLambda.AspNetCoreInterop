@@ -9,7 +9,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>aws, lambda, interop, app mesh, microservice communication, catalog, aspnetcore</PackageTags>
     <PackageReleaseNotes>v1.0.4 - Fixed issue with circular host registration
-v1.0.3 - Improve ApplicationUrl discovery
+v1.0.3 - Improved ApplicationUrl discovery
 v1.0.2 - Friendlier error messages
 v1.0.1 - Intital Release</PackageReleaseNotes>
     <Copyright></Copyright>
