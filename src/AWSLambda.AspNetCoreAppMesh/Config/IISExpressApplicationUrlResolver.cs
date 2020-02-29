@@ -8,11 +8,11 @@ using System.Text;
 
 namespace AWSLambda.AspNetCoreAppMesh.Config
 {
-    public class FromLaunchSettingsApplicationUrlResolver : IApplicationUrlResolver
+    public class IISExpressApplicationUrlResolver : IApplicationUrlResolver
     {
-        readonly ILogger<FromLaunchSettingsApplicationUrlResolver> logger;
+        readonly ILogger<IISExpressApplicationUrlResolver> logger;
 
-        public FromLaunchSettingsApplicationUrlResolver(ILogger<FromLaunchSettingsApplicationUrlResolver> logger)
+        public IISExpressApplicationUrlResolver(ILogger<IISExpressApplicationUrlResolver> logger)
         {
             this.logger = logger;
         }

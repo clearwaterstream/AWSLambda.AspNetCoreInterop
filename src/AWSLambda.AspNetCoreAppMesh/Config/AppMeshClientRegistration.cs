@@ -21,7 +21,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddSingleton<IPairingTokenResolver, PairingTokenResolver>();
 
-            services.AddSingleton<IApplicationUrlResolver, FromLaunchSettingsApplicationUrlResolver>();
+            services.AddSingleton<IApplicationUrlResolver, KestrelApplicationUrlResolver>();
 
             services.AddHttpClient<ICatalogRegistrarAgent, CatalogRegistrarAgent>();
 
@@ -91,7 +91,7 @@ namespace Microsoft.AspNetCore.Hosting
 
             var listenUrl = UriUtil.Combine(opts.ApplicationUrl, opts.HandlerPathForIncomingRequests);
 
-            logger.LogInformation($"Registered with catalog {opts.CatalogUrl}. Listening for incoming requests on ${listenUrl}");
+            logger.LogInformation($"Registered with catalog {opts.CatalogUrl}. Listening for incoming requests on {listenUrl}");
 
             return app;
         }

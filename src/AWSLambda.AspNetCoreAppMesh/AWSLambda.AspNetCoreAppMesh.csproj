@@ -8,12 +8,13 @@
     <RepositoryUrl>https://github.com/clearwaterstream/aws-lambda-aspdotnetcore-appmesh.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>aws, lambda, interop, app mesh, microservice communication, catalog, aspnetcore</PackageTags>
-    <PackageReleaseNotes>v1.0.2 - Friendlier error messages
+    <PackageReleaseNotes>v1.0.3 - Improve ApplicationUrl discovery
+v1.0.2 - Friendlier error messages
 v1.0.1 - Intital Release</PackageReleaseNotes>
     <Copyright></Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <Description>Enable local communication and debugging between ASP.NET Core applications that are configured to run as AWS Lambda functions.</Description>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <Copyright>Copyright (c) $([System.DateTime]::Now.Year) Igor Krupin</Copyright>
   </PropertyGroup>
