@@ -1,4 +1,4 @@
-# Amazon Lambda ASP .NET Core App Mesh - Catalog
+# Amazon Lambda ASP.NET Core App Mesh - Catalog
 
 ### Catalog installation
 
