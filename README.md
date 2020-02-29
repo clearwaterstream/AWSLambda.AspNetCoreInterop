@@ -38,7 +38,7 @@ resp = await invokeReq.RouteAPIGatewayProxyRequestLocally();
 
 ### Catalog installation
 
-Catalog tool keeps track of all the running ASP.NET Core Applications on your local machine that choose to register to recieve incoming `InvokeRequest` requests.
+Catalog tool keeps track of all the running ASP.NET Core Applications on your local machine that register to recieve incoming `InvokeRequest` requests.
 
 ```
 dotnet tool install -g AWSLambda.AspNetCoreAppMesh.Catalog
@@ -57,3 +57,23 @@ Once the catalog is running, your ASP.NET Core application will be able to regis
 See full [Catalog Tool Documentation](https://github.com/clearwaterstream/aws-lambda-aspdotnetcore-appmesh/tree/master/src/AWSLambda.AspNetCoreAppMesh.Catalog)
 
 ### Configuring Your ASP.NET Core Application to route `InvokeRequest` objects locally
+
+In Startup.cs
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+	services.AddAWSLambdaAppMeshClient(opts =>
+	{
+		opts.LambdaName = "MyAspNetCoreLambda"; // name of your Lambda function
+		opts.CatalogUrl = "http://localhost:5050"; // URL the catalog tool (lambda-mesh-cat) is listening on
+	});
+}
+
+public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+{
+	app.UseAWSLambdaAppMeshClient();
+}
+```
+
+Now, you can call `RouteAPIGatewayProxyRequestLocally()` on your `InvokeRequest` requests.
