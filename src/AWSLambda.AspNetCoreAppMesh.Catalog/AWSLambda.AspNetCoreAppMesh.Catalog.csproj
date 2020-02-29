@@ -12,13 +12,14 @@
     <PackageTags>aws, lambda, interop, app mesh, microservice communication, catalog</PackageTags>
     <Description>Catalog component to support registration of AWS Lambda functions running on the local machine</Description>
     <RepositoryUrl>https://github.com/clearwaterstream/aws-lambda-aspdotnetcore-appmesh.git</RepositoryUrl>
-    <PackageReleaseNotes>v1.0.1 - Don't wait for user input on exit
+    <PackageReleaseNotes>v1.0.2 - Donwgraded AWSSDK.Lambda to align with Lambda .NET Core 2.1 LTS runtime environment
+v1.0.1 - Don't wait for user input on exit
 v1.0.0 - Initial Release</PackageReleaseNotes>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/clearwaterstream/aws-lambda-aspdotnetcore-appmesh</PackageProjectUrl>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <Copyright>Copyright (c) $([System.DateTime]::Now.Year) Igor Krupin</Copyright>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,6 +35,12 @@ v1.0.0 - Initial Release</PackageReleaseNotes>
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\Shared\JsonUtil.cs" Link="Util\JsonUtil.cs" />
+    <Compile Include="..\Shared\LambdaInteropOptions.cs" Link="Util\LambdaInteropOptions.cs" />
+    <Compile Include="..\Shared\UriUtil.cs" Link="Util\UriUtil.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Amazon.Lambda.APIGatewayEvents" Version="1.3.0" />
     <PackageReference Include="AWSSDK.Lambda" Version="3.3.108.4" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.0" />
@@ -41,10 +48,6 @@ v1.0.0 - Initial Release</PackageReleaseNotes>
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\AWSLambda.AspNetCoreAppMesh.Util\AWSLambda.AspNetCoreAppMesh.Util.csproj" />
   </ItemGroup>
 
 </Project>
