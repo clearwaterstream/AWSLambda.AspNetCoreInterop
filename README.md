@@ -9,9 +9,9 @@ You have a fleet of serverless ASP.NET Core apps configured as AWS Lambda functi
 
 ### Example
 
-```csharp
 Say you have an existing Invoke code such as this:
 
+```csharp
 var invokeReq = new InvokeRequest();
 invokeReq.FunctionName = "MyLambdaFunction";
 invokeReq.InvocationType = InvocationType.RequestResponse;
@@ -20,7 +20,7 @@ invokeReq.InvocationType = InvocationType.RequestResponse;
 var apiGatewayReq = new APIGatewayProxyRequest()
 {
     HttpMethod = "GET",
-    Path = "/Home/Index"
+    Path = "/home/index"
 };
 
 invokeReq.Payload = JsonConvert.SerializeObject(apiGatewayReq);
@@ -38,7 +38,7 @@ resp = await invokeReq.RouteAPIGatewayProxyRequestLocally();
 
 ### Catalog installation
 
-Catalog keeps track of all the running ASP.NET Core Applications on your local machine that choose to register to recieve incoming `InvokeRequest` requests.
+Catalog tool keeps track of all the running ASP.NET Core Applications on your local machine that choose to register to recieve incoming `InvokeRequest` requests.
 
 ```
 dotnet tool install -g AWSLambda.AspNetCoreAppMesh.Catalog
@@ -53,3 +53,7 @@ lambda-mesh-cat --urls http://localhost:5050
 The `--urls` param is optional. The tool will listen on port 5000 and 5001 by default.
 
 Once the catalog is running, your ASP.NET Core application will be able to register themselves with the catalog. Ensure the catalog url is resolvable and reachable by your applications.
+
+See full [Catalog Tool Documentation](https://github.com/clearwaterstream/aws-lambda-aspdotnetcore-appmesh/tree/master/src/AWSLambda.AspNetCoreAppMesh.Catalog)
+
+### Configuring Your ASP.NET Core Application to route `InvokeRequest` objects locally
