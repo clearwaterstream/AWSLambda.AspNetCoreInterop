@@ -42,10 +42,6 @@ Catalog tool keeps track of all the running ASP.NET Core Applications on your lo
 
 ```
 dotnet tool install -g AWSLambda.AspNetCoreAppMesh.Catalog
-
-// --- to update an existing installation ---
-
-dotnet tool update -g AWSLambda.AspNetCoreAppMesh.Catalog
 ```
 
 Run the catalog
