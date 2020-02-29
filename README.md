@@ -76,4 +76,4 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 }
 ```
 
-Now, you can call `RouteAPIGatewayProxyRequestLocally()` on your `InvokeRequest` requests.
+Now, you can call `RouteAPIGatewayProxyRequestLocally()` on your `InvokeRequest` requests. Ensure the Catalog toos is running prior to your ASP.NET Core apps starting up and calling `UseAWSLambdaAppMeshClient()`, otherwise you'll get an exception.
