@@ -30,13 +30,13 @@ namespace SampleWebApp
                 opts.CatalogUrl = "http://localhost:5050"; // URL the catalog tool (lambda-mesh-cat) is listening on
             });
             
-            //services.AddAPIGatewayProxyFunctionEntryPoint<LambdaEntryPoint>();
+            services.AddAPIGatewayProxyFunctionEntryPoint<LambdaEntryPoint>(); // your APIGatewayProxyFunction entry point
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseAWSLambdaAppMeshClient();
-            //app.HandleIncomingAWSLambdaInvokeRequests(env);
+            app.HandleIncomingAWSLambdaInvokeRequests(env);
 
             app.UseDeveloperExceptionPage();
             app.UseStaticFiles();

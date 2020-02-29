@@ -17,12 +17,12 @@ namespace AWSLambda.AspNetCoreAppMesh.TestApp.Controllers
         [AllowAnonymous]
         public IActionResult Hello()
         {
-            return Content("hello yourself");
+            return Content("Hello, MyAspNetCoreLambda at your service.");
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> MirrorHello()
+        public async Task<IActionResult> SayHelloToSelf()
         {
             // call Hello() via routing the InvokeRequest locally (over http)
 
