@@ -9,9 +9,9 @@ You have a fleet of serverless ASP.NET Core apps configured as AWS Lambda functi
 
 ### Example
 
-```csharp
 Say you have an existing Invoke code such as this:
 
+```csharp
 var invokeReq = new InvokeRequest();
 invokeReq.FunctionName = "MyLambdaFunction";
 invokeReq.InvocationType = InvocationType.RequestResponse;
