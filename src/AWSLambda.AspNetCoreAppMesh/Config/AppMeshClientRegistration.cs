@@ -42,6 +42,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
 namespace Microsoft.AspNetCore.Hosting
 {
+    using Microsoft.AspNetCore.Hosting.Server;
     using Microsoft.Extensions.DependencyInjection;
 
     public static class LambdaAppMeshClientAppFeature
@@ -73,6 +74,15 @@ namespace Microsoft.AspNetCore.Hosting
 
         public static IApplicationBuilder HandleIncomingAWSLambdaInvokeRequests(this IApplicationBuilder app, IHostingEnvironment env)
         {
+            var server = app.ApplicationServices.GetService<IServer>();
+
+            if(server.GetType().Name == "LambdaServer")
+            {
+                // Inception -- we are 2nd level deep here. Wake up.
+                
+                return app;
+            }
+
             var opts = GetAppMeshOptions(app.ApplicationServices);
 
             // safeguard
@@ -111,7 +121,7 @@ namespace Microsoft.AspNetCore.Hosting
             {
                 var v = p.GetValue(opts);
 
-                if (v is string)
+                if (p.PropertyType == typeof(string))
                 {
                     var strVal = (string)v;
 
