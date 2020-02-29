@@ -20,7 +20,7 @@ invokeReq.InvocationType = InvocationType.RequestResponse;
 var apiGatewayReq = new APIGatewayProxyRequest()
 {
     HttpMethod = "GET",
-    Path = "/Home/Index"
+    Path = "/home/index"
 };
 
 invokeReq.Payload = JsonConvert.SerializeObject(apiGatewayReq);
