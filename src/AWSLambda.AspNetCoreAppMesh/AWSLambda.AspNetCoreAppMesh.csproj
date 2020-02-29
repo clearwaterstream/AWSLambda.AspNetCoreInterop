@@ -12,7 +12,7 @@
     <Copyright></Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <Description>Enable local communication and debugging between ASP.NET Core applications that are configured to run as AWS Lambda functions.</Description>
-    <Version>1.0.1</Version>
+    <Version>1.0.2-rc</Version>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <Copyright>Copyright (c) $([System.DateTime]::Now.Year) Igor Krupin</Copyright>
   </PropertyGroup>
@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <Compile Include="..\Shared\JsonUtil.cs" Link="Util\JsonUtil.cs" />
-    <Compile Include="..\Shared\LambdaInteropOptions.cs" Link="Util\LambdaInteropOptions.cs" />
+    <Compile Include="..\Shared\LambdaAppMeshOptions.cs" Link="Util\LambdaAppMeshOptions.cs" />
     <Compile Include="..\Shared\UriUtil.cs" Link="Util\UriUtil.cs" />
   </ItemGroup>
 

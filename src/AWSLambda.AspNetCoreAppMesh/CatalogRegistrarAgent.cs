@@ -23,6 +23,8 @@ namespace AWSLambda.AspNetCoreAppMesh
         readonly ILogger<CatalogRegistrarAgent> logger;
         readonly LambdaAppMeshOptions appMeshOptions;
 
+        static readonly string ensureCatToolIsRunningMsg = "Ensure the catalog tool is running (lambda-mesh-cat) and that it is accessible. See https://github.com/clearwaterstream/aws-lambda-aspdotnetcore-appmesh for more info.";
+
         public CatalogRegistrarAgent(HttpClient httpClient, ILogger<CatalogRegistrarAgent> logger, IOptions<LambdaAppMeshOptions> opts)
         {
             this.httpClient = httpClient;
@@ -44,7 +46,7 @@ namespace AWSLambda.AspNetCoreAppMesh
             }
             catch (Exception ex)
             {
-                throw new AppMeshException($"Error registering with catalog {appMeshOptions.CatalogUrl}. Ensure the catalog service is running and that it is accessible.", ex);
+                throw new AppMeshException($"Error registering with catalog {appMeshOptions.CatalogUrl}. {ensureCatToolIsRunningMsg}", ex);
             }
         }
 
@@ -103,7 +105,7 @@ namespace AWSLambda.AspNetCoreAppMesh
                         {
                             if (!resp.IsSuccessStatusCode)
                             {
-                                throw new AppMeshException($"Error registering with catalog {appMeshOptions.CatalogUrl}. Status code {resp.StatusCode}. Ensure the catalog service is running and that it is accessible.");
+                                throw new AppMeshException($"Error registering with catalog {appMeshOptions.CatalogUrl}. Status code {resp.StatusCode}. {ensureCatToolIsRunningMsg}.");
                             }
                         }
                     }
