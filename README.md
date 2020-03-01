@@ -3,7 +3,6 @@
 You have a fleet of serverless ASP.NET Core apps configured as AWS Lambda functions. While `AmazonLambdaClient.InvokeAsync()` found in the [AWSSDK.Lambda](https://docs.aws.amazon.com/sdkfornet/v3/apidocs/items/Lambda/MLambdaInvokeInvokeRequest.html) is a great way to achieve [inter-Lambda communication](https://docs.aws.amazon.com/lambda/latest/dg/lambda-invocation.html), the method does not work for invocation of Lambdas running on your local machine. This library aims to fill this functionality gap by marshalling your requests using Kestrel when your ASP.NET Core lambdas are being debugged locally.
 
 ### Roadmap
-* Validate the solution on OSX
 * Catalog: remember the last used --urls setting
 * Catalog clients: auto-discover the catalog tool url (assess feasibility)
 * Support for Lambdas deployed behind an ALB
@@ -38,23 +37,23 @@ resp = await invokeReq.RouteAPIGatewayProxyRequestLocally();
 ```
 ## Getting Started
 
-### Catalog installation
+### Catalog Tool Installation
 
-Catalog tool keeps track of all the running ASP.NET Core Applications on your local machine that register to recieve incoming `InvokeRequest` requests.
+Catalog Tool keeps track of all the running Lambda ASP.NET Core Applications on your local machine that register to recieve incoming `InvokeRequest` requests.
 
 ```
 dotnet tool install -g AWSLambda.AspNetCoreAppMesh.Catalog
 ```
 
-Run the catalog
+Run the Catalog Tool
 
 ```
-lambda-mesh-cat --urls http://localhost:5050
+dotnet lambda-app-mesh --urls http://localhost:5050
 ```
 
 The `--urls` param is optional. The tool will listen on port 5000 and 5001 by default.
 
-Once the catalog is running, your ASP.NET Core application will be able to register themselves with the catalog. Ensure the catalog url is resolvable and reachable by your applications.
+Once the Catalog Tool is running, your ASP.NET Core applications will be able to register themselves with the catalog. Ensure the catalog url is resolvable and reachable by your applications.
 
 See full [Catalog Tool Documentation](https://github.com/clearwaterstream/aws-lambda-aspdotnetcore-appmesh/tree/master/src/AWSLambda.AspNetCoreAppMesh.Catalog)
 
