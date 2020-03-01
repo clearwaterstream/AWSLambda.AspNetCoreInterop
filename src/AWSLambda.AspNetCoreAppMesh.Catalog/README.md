@@ -14,6 +14,6 @@ Run the catalog
 dotnet lambda-app-mesh --urls http://localhost:5050
 ```
 
-The `--urls` param is optional. The tool will listen on port 5000 and 5001 by default.
+The `--urls` param is optional. The tool will listen on port 5000 and 5001 by default. This is a default port for Kestrel applications so you may want to change it for the Catalog tool.
 
 Once the catalog is running, your ASP.NET Core application will be able to register themselves with the catalog. Ensure the catalog url is resolvable and reachable by your applications.
