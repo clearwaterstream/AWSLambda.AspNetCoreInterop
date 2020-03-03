@@ -15,15 +15,17 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
 
         public static readonly string Title = "AWS Lambda ASP.NET Core App Mesh - Catalog";
 
+        static AppSettings settings;
+
         static void Main(string[] args)
         {
             ConsoleUtil.WriteProgramTitle(Title);
 
-            var appSettings = AppSettingsResolver.Load(args);
+            settings = AppSettingsResolver.Load(args);
 
-            if(appSettings != null)
+            if(settings != null)
             {
-                args = appSettings.Args;
+                args = settings.Args;
             }
 
             try
@@ -33,11 +35,6 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
             catch(Exception ex)
             {
                 Console.Error.WriteLine($"Startup error: {ex.ToString()}");
-            }
-
-            if(appSettings !=  null)
-            {
-                AppSettingsResolver.Save(appSettings);
             }
         }
 
@@ -61,5 +58,13 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+
+        public static void OnShuttingDown()
+        {
+            if(settings != null)
+            {
+                AppSettingsResolver.Save(settings);
+            }
+        }
     }
 }

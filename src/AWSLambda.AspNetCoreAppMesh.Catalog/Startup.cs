@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace AWSLambda.AspNetCoreAppMesh.Catalog
 {
     using Microsoft.AspNetCore.Server.Kestrel.Core;
+    using Microsoft.Extensions.Hosting;
     using RouteHandlers;
     
     public class Startup
@@ -38,6 +39,13 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var appLifetime = app.ApplicationServices.GetService<IHostApplicationLifetime>();
+
+            if(appLifetime != null)
+            {
+                appLifetime.ApplicationStopping.Register(Program.OnShuttingDown);
+            }
+            
             app.UseExceptionHandler(new ExceptionHandlerOptions() { ExceptionHandler = GlobalErrorHandler.ExceptionHandlerDelegate });
 
             app.UseRouting();
