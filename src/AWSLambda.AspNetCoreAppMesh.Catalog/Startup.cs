@@ -7,12 +7,15 @@ using Microsoft.Extensions.Logging;
 
 namespace AWSLambda.AspNetCoreAppMesh.Catalog
 {
+    using AWSLambda.AspNetCoreAppMesh.Util;
+    using Microsoft.AspNetCore.Hosting.Server.Features;
     using Microsoft.AspNetCore.Server.Kestrel.Core;
     using Microsoft.Extensions.Hosting;
     using RouteHandlers;
-    
+    using System.Linq;
+
     public class Startup
-    {   
+    {           
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -35,10 +38,13 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
             services.AddSingleton<Home>();
             services.AddSingleton<Register>();
             services.AddSingleton<GetFunctionInfo>();
+            services.AddSingleton<RegisteredFunctions>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var logger = app.ApplicationServices.GetService<ILogger<Startup>>();
+            
             var appLifetime = app.ApplicationServices.GetService<IHostApplicationLifetime>();
 
             if(appLifetime != null)
@@ -53,17 +59,29 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
             var home = app.ApplicationServices.GetRequiredService<Home>();
             var register = app.ApplicationServices.GetRequiredService<Register>();
             var getFunctionInfo = app.ApplicationServices.GetRequiredService<GetFunctionInfo>();
+            var registeredFunctions = app.ApplicationServices.GetRequiredService<RegisteredFunctions>();
+
+            var registeredFunctionsEndpoint = "/registered-functions";
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGet("/", home.Invoke);
 
-                //endpoints.MapGet("/registered-functions", ...);
+                endpoints.MapGet(registeredFunctionsEndpoint, registeredFunctions.Invoke);
 
                 endpoints.MapGet("/function-info", getFunctionInfo.Invoke);
 
                 endpoints.MapPost("/register", register.Invoke);
             });
+
+            var addrF = app.ServerFeatures.Get<IServerAddressesFeature>();
+
+            if (addrF != null && addrF.Addresses != null && addrF.Addresses.Any())
+            {
+                registeredFunctionsEndpoint = UriUtil.Combine(addrF.Addresses.First(), registeredFunctionsEndpoint);
+            }
+
+            logger.LogInformation($"-- Use {registeredFunctionsEndpoint} to see a list of registered functions --");
         }
     }
 }

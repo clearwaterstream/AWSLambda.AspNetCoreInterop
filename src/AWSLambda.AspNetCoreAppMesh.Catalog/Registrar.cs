@@ -14,6 +14,8 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
 
         readonly Dictionary<string, LambdaAppMeshOptions> _list = new Dictionary<string, LambdaAppMeshOptions>();
 
+        public Dictionary<string, LambdaAppMeshOptions> FunctionList => _list;
+
         public void RegisterFunction(LambdaAppMeshOptions options)
         {
             var k = options.LambdaName.ToLowerInvariant();
