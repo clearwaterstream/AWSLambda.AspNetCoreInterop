@@ -11,7 +11,7 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
     using RouteHandlers;
     
     public class Startup
-    {
+    {   
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;

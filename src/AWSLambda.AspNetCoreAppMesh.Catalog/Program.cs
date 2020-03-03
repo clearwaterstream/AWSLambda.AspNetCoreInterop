@@ -1,4 +1,5 @@
-﻿using AWSLambda.AspNetCoreAppMesh.Catalog.Util;
+﻿using AWSLambda.AspNetCoreAppMesh.Catalog.Config;
+using AWSLambda.AspNetCoreAppMesh.Catalog.Util;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -18,6 +19,13 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
         {
             ConsoleUtil.WriteProgramTitle(Title);
 
+            var appSettings = AppSettingsResolver.Load(args);
+
+            if(appSettings != null)
+            {
+                args = appSettings.Args;
+            }
+
             try
             {
                 Run(args);
@@ -25,6 +33,11 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
             catch(Exception ex)
             {
                 Console.Error.WriteLine($"Startup error: {ex.ToString()}");
+            }
+
+            if(appSettings !=  null)
+            {
+                AppSettingsResolver.Save(appSettings);
             }
         }
 
