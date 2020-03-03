@@ -27,6 +27,8 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog.RouteHandlers
 
             Registrar.Instance.RegisterFunction(opts);
 
+            logger.LogInformation($"Function {opts.LambdaName} registered: {opts.ListensOn()}");
+
             httpContext.Response.StatusCode = 200;
             
             await httpContext.Response.WriteAsync("ok");

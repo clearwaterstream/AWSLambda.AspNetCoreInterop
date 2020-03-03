@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AWSLambda.AspNetCoreAppMesh.Util;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
@@ -21,5 +22,18 @@ namespace AWSLambda.AspNetCoreAppMesh.Config
         public string ApplicationUrl { get; set; }
         public string HandlerPathForIncomingRequests { get; set; } = "/lambda-invoke-handler";
         public bool HandleIncomingRequestsInDevelopmentOnly { get; set; } = true;
+    }
+
+    public static class LambdaAppMeshOptionsExtensions
+    {
+        public static string ListensOn(this LambdaAppMeshOptions opts)
+        {
+            if (opts == null)
+                return null;
+
+            var result = UriUtil.Combine(opts.ApplicationUrl, opts.HandlerPathForIncomingRequests);
+
+            return result;
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AWSLambda.AspNetCoreAppMesh.Config;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -35,13 +36,13 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog.RouteHandlers
 
             // todo -- redo the format below. User something like ConsoleTables
 
-            sb.AppendLine($"Function Name\t\t\tUrl\t\t\t\tListening for Incoming Requests On");
+            sb.AppendLine($"Function Name\t\t\tListens On");
 
             foreach(var f in Registrar.Instance.FunctionList)
             {
                 var opts = f.Value;
                 
-                sb.AppendLine($"{opts.LambdaName}\t\t{opts.ApplicationUrl}\t\t{opts.HandlerPathForIncomingRequests}");
+                sb.AppendLine($"{opts.LambdaName}\t\t{opts.ListensOn()}");
             }
 
             return httpContext.Response.WriteAsync(sb.ToString());
