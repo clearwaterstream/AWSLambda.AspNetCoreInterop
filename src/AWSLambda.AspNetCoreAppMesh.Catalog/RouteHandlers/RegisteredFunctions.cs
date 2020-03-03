@@ -33,8 +33,8 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog.RouteHandlers
                 return httpContext.Response.WriteAsync(sb.ToString());
             }
 
-            // todo -- format
-            
+            // todo -- redo the format below. User something like ConsoleTables
+
             sb.AppendLine($"Function Name\t\t\tUrl\t\t\t\tListening for Incoming Requests On");
 
             foreach(var f in Registrar.Instance.FunctionList)
