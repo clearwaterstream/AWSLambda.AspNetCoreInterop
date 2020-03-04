@@ -47,7 +47,7 @@ dotnet tool install -g AWSLambda.AspNetCoreAppMesh.Catalog
 Run the Catalog Tool
 
 ```
-dotnet lambda-app- --urls http://localhost:5050
+dotnet lambda-app-mesh --urls http://localhost:5050
 ```
 
 The `--urls` param is optional. The tool will listen on port 5000 and 5001 by default.
