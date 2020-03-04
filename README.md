@@ -47,7 +47,7 @@ dotnet tool install -g AWSLambda.AspNetCoreAppMesh.Catalog
 Run the Catalog Tool
 
 ```
-dotnet lambda-app-mesh --urls http://localhost:5050
+dotnet lambda-app- --urls http://localhost:5050
 ```
 
 The `--urls` param is optional. The tool will listen on port 5000 and 5001 by default.
@@ -80,7 +80,7 @@ Now, you can call `RouteAPIGatewayProxyRequestLocally()` on your `InvokeRequest`
 
 ### Configuring Your ASP.NET Core Application to receive incoming `InvokeRequest` requests
 
-**Ensure Catalog tool (lambda-mesh-cat) is running prior to to launching your ASP.NET Core apps**. Otherwise, you'll get an exception when trying to register with the catalog.
+**Ensure Catalog Tool (dotnet lambda-app-mesh) is running prior to to launching your ASP.NET Core apps**. Otherwise, you'll get an exception when trying to register with the catalog.
 
 In Startup.cs
 
