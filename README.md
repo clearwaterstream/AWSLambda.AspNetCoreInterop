@@ -80,7 +80,7 @@ Now, you can call `RouteAPIGatewayProxyRequestLocally()` on your `InvokeRequest`
 
 ### Configuring Your ASP.NET Core Application to receive incoming `InvokeRequest` requests
 
-**Ensure Catalog Tool (dotnet lambda-app-mesh) is running prior to to launching your ASP.NET Core apps**. Otherwise, you'll get an exception when trying to register with the catalog.
+**Ensure the Catalog Tool (dotnet lambda-app-mesh) is running prior to to launching your ASP.NET Core apps**. Otherwise, you'll get an exception when trying to register with the catalog.
 
 In Startup.cs
 
