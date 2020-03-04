@@ -35,8 +35,7 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
                 c.TimestampFormat = "[HH:mm:ss.ffff] ";
             }));
 
-            services.AddRazorPages();
-
+            services.AddSingleton<Home>();
             services.AddSingleton<Register>();
             services.AddSingleton<GetFunctionInfo>();
         }
@@ -58,12 +57,13 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
 
             app.UseRouting();
 
+            var home = app.ApplicationServices.GetRequiredService<Home>();
             var register = app.ApplicationServices.GetRequiredService<Register>();
             var getFunctionInfo = app.ApplicationServices.GetRequiredService<GetFunctionInfo>();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
+                endpoints.MapGet("/", home.Invoke);
 
                 endpoints.MapGet("/function-info", getFunctionInfo.Invoke);
 

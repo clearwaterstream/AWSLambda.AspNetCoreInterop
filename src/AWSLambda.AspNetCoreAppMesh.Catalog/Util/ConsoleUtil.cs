@@ -20,5 +20,16 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog.Util
             Console.WriteLine(title.PadLeft(titleLeftPadding));
             Console.WriteLine(lines);
         }
+
+        public static void WriteProgramTitle(string title, StringBuilder sb)
+        {
+            string lines = new string('=', colCount);
+
+            int titleLeftPadding = (colCount - title.Length) / 2 + title.Length;
+
+            sb.AppendLine(lines);
+            sb.AppendLine(title.PadLeft(titleLeftPadding));
+            sb.AppendLine(lines);
+        }
     }
 }
