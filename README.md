@@ -3,7 +3,6 @@
 You have a fleet of serverless ASP.NET Core apps configured as AWS Lambda functions. While `AmazonLambdaClient.InvokeAsync()` found in the [AWSSDK.Lambda](https://docs.aws.amazon.com/sdkfornet/v3/apidocs/items/Lambda/MLambdaInvokeInvokeRequest.html) is a great way to achieve [inter-Lambda communication](https://docs.aws.amazon.com/lambda/latest/dg/lambda-invocation.html), the method does not work for invocation of Lambdas running on your local machine. This library aims to fill this functionality gap by marshalling your requests using Kestrel when your ASP.NET Core lambdas are being debugged locally.
 
 ### Roadmap
-* Catalog: remember the last used --urls setting
 * Catalog clients: auto-discover the catalog tool url (assess feasibility)
 * Support for Lambdas deployed behind an ALB
 * NET 3.1 support (dependant on AWS)
@@ -67,7 +66,7 @@ public void ConfigureServices(IServiceCollection services)
 	services.AddAWSLambdaAppMeshClient(opts =>
 	{
 		opts.LambdaName = "MyAspNetCoreLambda"; // name of your Lambda function
-		opts.CatalogUrl = "http://localhost:5050"; // URL the catalog tool (lambda-mesh-cat) is listening on
+		opts.CatalogUrl = "http://localhost:5050"; // URL the Catalog Tool (dotnet lambda-app-mesh) is listening on
 	});
 }
 
