@@ -80,7 +80,7 @@ Now, you can call `RouteAPIGatewayProxyRequestLocally()` on your `InvokeRequest`
 
 ### Configuring Your ASP.NET Core Application to receive incoming `InvokeRequest` requests
 
-_It is assumed that your ASP.NET Core Lambda applications are configured to run using Kestrel when debugging locally. If you are running the app using IIS or IIS Express then the requests will fail to be processed properly._
+_It is assumed that your ASP.NET Core Lambda applications are configured to run using Kestrel when debugging locally. If you are running the app using IIS or IIS Express then the incoming requests will fail to be processed properly._
 
 **Ensure the Catalog Tool (dotnet lambda-app-mesh) is running prior to to launching your ASP.NET Core apps**. Otherwise, you'll get an exception when trying to register with the catalog.
 
