@@ -6,21 +6,27 @@ using System.Text;
 
 namespace AWSLambda.AspNetCoreAppMesh.Config
 {
-    public interface ILambdaAppMeshOptions
+    public class LambdaAppMeshOptions
     {
-        string LambdaName { get; set; }
-        string CatalogUrl { get; set; }
-        string ApplicationUrl { get; set; }
-        string HandlerPathForIncomingRequests { get; set; }
-        bool HandleIncomingRequestsInDevelopmentOnly { get; set; }
-    }
-
-    public class LambdaAppMeshOptions : ILambdaAppMeshOptions
-    {
+        /// <summary>
+        /// Name of this Lambda Function
+        /// </summary>
         public string LambdaName { get; set; }
+        /// <summary>
+        /// Url of the Catalog Tool (dotnet lambda-app-mesh)
+        /// </summary>
         public string CatalogUrl { get; set; }
+        /// <summary>
+        /// Url of this application when running locally (the library will try to infer from launchSettings.json)
+        /// </summary>
         public string ApplicationUrl { get; set; }
+        /// <summary>
+        /// Path to use to handle incoming Invoke requests, defaults to /lambda-invoke-handler
+        /// </summary>
         public string HandlerPathForIncomingRequests { get; set; } = "/lambda-invoke-handler";
+        /// <summary>
+        /// Listen for incoming requests in Development environment only (safe-guard). Default is true
+        /// </summary>
         public bool HandleIncomingRequestsInDevelopmentOnly { get; set; } = true;
     }
 

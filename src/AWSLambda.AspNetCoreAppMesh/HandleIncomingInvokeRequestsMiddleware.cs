@@ -18,7 +18,7 @@ namespace AWSLambda.AspNetCoreAppMesh
     {
         readonly RequestDelegate next;
         readonly ILogger<HandleIncomingInvokeRequestsMiddleware> logger;
-        readonly ILambdaAppMeshOptions opts;
+        readonly LambdaAppMeshOptions opts;
         readonly IServiceProvider services;
         readonly IPairingTokenResolver pairingTokenResolver;
 
