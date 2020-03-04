@@ -6,6 +6,7 @@
   "profiles": {
     "AWSLambda.AspNetCoreAppMesh.Catalog": {
       "commandName": "Project",
+      "commandLineArgs": "--urls http://localhost:5050",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

@@ -35,10 +35,10 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
                 c.TimestampFormat = "[HH:mm:ss.ffff] ";
             }));
 
-            services.AddSingleton<Home>();
+            services.AddRazorPages();
+
             services.AddSingleton<Register>();
             services.AddSingleton<GetFunctionInfo>();
-            services.AddSingleton<RegisteredFunctions>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -54,20 +54,16 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
             
             app.UseExceptionHandler(new ExceptionHandlerOptions() { ExceptionHandler = GlobalErrorHandler.ExceptionHandlerDelegate });
 
+            app.UseStaticFiles();
+
             app.UseRouting();
 
-            var home = app.ApplicationServices.GetRequiredService<Home>();
             var register = app.ApplicationServices.GetRequiredService<Register>();
             var getFunctionInfo = app.ApplicationServices.GetRequiredService<GetFunctionInfo>();
-            var registeredFunctions = app.ApplicationServices.GetRequiredService<RegisteredFunctions>();
-
-            var registeredFunctionsEndpoint = "/registered-functions";
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", home.Invoke);
-
-                endpoints.MapGet(registeredFunctionsEndpoint, registeredFunctions.Invoke);
+                endpoints.MapRazorPages();
 
                 endpoints.MapGet("/function-info", getFunctionInfo.Invoke);
 
@@ -78,10 +74,8 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
 
             if (addrF != null && addrF.Addresses != null && addrF.Addresses.Any())
             {
-                registeredFunctionsEndpoint = UriUtil.Combine(addrF.Addresses.First(), registeredFunctionsEndpoint);
+                logger.LogInformation($"-- Use {addrF.Addresses.First()} to see a list of registered functions --");
             }
-
-            logger.LogInformation($"-- Use {registeredFunctionsEndpoint} to see a list of registered functions --");
         }
     }
 }

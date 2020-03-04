@@ -27,7 +27,7 @@ namespace SampleWebApp
             services.AddAWSLambdaAppMeshClient(opts =>
             {
                 opts.LambdaName = "MyAspNetCoreLambda"; // name of your Lambda function
-                opts.CatalogUrl = "http://localhost:5050"; // URL the catalog tool (lambda-mesh-cat) is listening on
+                opts.CatalogUrl = "http://localhost:5050"; // URL the catalog tool (dotnet lambda-app-mesh) is listening on
             });
             
             services.AddAPIGatewayProxyFunctionEntryPoint<LambdaEntryPoint>(); // your APIGatewayProxyFunction entry point

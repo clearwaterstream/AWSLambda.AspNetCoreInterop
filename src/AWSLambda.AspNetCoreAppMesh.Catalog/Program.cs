@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace AWSLambda.AspNetCoreAppMesh.Catalog
 {
-    class Program
+    public class Program
     {
         static ILogger<Program> logger;
 

@@ -11,7 +11,8 @@
     <PackageTags>aws, lambda, interop, app mesh, microservice communication, catalog, aspdotnet</PackageTags>
     <Description>Catalog component to support registration of AWS Lambda functions running on the local machine</Description>
     <RepositoryUrl>https://github.com/clearwaterstream/aws-lambda-aspdotnetcore-appmesh.git</RepositoryUrl>
-    <PackageReleaseNotes>v1.0.4 - Bumped version due to collision with "1.0.3-alpha"
+    <PackageReleaseNotes>v1.0.5 - Added support for saving/restoring previously used args (such as --urls)
+v1.0.4 - Bumped version due to collision with "1.0.3-alpha"
 v1.0.3 - Switch command to dotnet lambda-app-mesh, tested on OSX
 v1.0.2 - Donwgraded AWSSDK.Lambda to align with Lambda .NET Core 2.1 LTS runtime environment
 v1.0.1 - Don't wait for user input on exit
@@ -20,7 +21,7 @@ v1.0.0 - Initial Release</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/clearwaterstream/aws-lambda-aspdotnetcore-appmesh</PackageProjectUrl>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <Copyright>Copyright (c) $([System.DateTime]::Now.Year) Igor Krupin</Copyright>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
   </PropertyGroup>
 
   <ItemGroup>
