@@ -6,6 +6,10 @@ Catalog Tool keeps track of all the running Lambda ASP.NET Core Applications on 
 
 ```
 dotnet tool install -g AWSLambda.AspNetCoreAppMesh.Catalog
+
+/* to update */
+
+dotnet tool update -g AWSLambda.AspNetCoreAppMesh.Catalog
 ```
 
 Run the Catalog Tool
