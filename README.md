@@ -63,6 +63,8 @@ See full [Catalog Tool Documentation](src/AWSLambda.AspNetCoreAppMesh.Catalog)
 
 ### Configuring Your ASP.NET Core Application to route `InvokeRequest` objects locally
 
+Add `AWSLambda.AspNetCoreAppMesh` NuGet package to your application.
+
 In Startup.cs
 
 ```csharp
