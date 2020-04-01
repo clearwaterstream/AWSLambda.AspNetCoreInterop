@@ -14,12 +14,13 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
     {
         static ILogger<Program> logger;
 
-        public static readonly string Title = "AWS Lambda ASP.NET Core App Mesh - Catalog";
+        static readonly string version = typeof(Program).Assembly.GetName().Version.ToString();
+        public static readonly string Title = $"AWS Lambda ASP.NET Core App Mesh - Catalog v{version}";
 
         static AppSettings settings;
 
         static async Task Main(string[] args)
-        {
+        {            
             ConsoleUtil.WriteProgramTitle(Title);
 
             settings = await AppSettingsResolver.Load(args);
