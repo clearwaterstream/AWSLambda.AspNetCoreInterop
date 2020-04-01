@@ -22,7 +22,8 @@ namespace SampleWebApp
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddControllers();
+            services.AddRazorPages();
 
             services.AddAWSLambdaAppMeshClient(opts =>
             {
@@ -33,16 +34,19 @@ namespace SampleWebApp
             services.AddAPIGatewayProxyFunctionEntryPoint<LambdaEntryPoint>(); // your APIGatewayProxyFunction entry point
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseAWSLambdaAppMeshClient();
             app.HandleIncomingAWSLambdaInvokeRequests(env);
 
             app.UseDeveloperExceptionPage();
             app.UseStaticFiles();
-            app.UseMvc(routes =>
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapDefaultControllerRoute();
+                endpoints.MapRazorPages();
             });
         }
     }
