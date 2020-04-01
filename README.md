@@ -7,7 +7,6 @@ You have a fleet of serverless ASP.NET Core apps configured as AWS Lambda functi
 ### Roadmap
 * Catalog clients: auto-discover the catalog tool url (assess feasibility)
 * Support for Lambdas deployed behind an ALB
-* NET 3.1 support (dependant on AWS)
 
 ### Example
 
