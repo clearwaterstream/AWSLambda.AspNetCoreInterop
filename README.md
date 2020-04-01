@@ -25,7 +25,7 @@ var apiGatewayReq = new APIGatewayProxyRequest()
     Path = "/home/index"
 };
 
-invokeReq.Payload = JsonConvert.SerializeObject(apiGatewayReq);
+invokeReq.Payload = JsonSerializer.Serialize(apiGatewayReq);
 
 var lambdaClient = new AmazonLambdaClient(); // region, creds
 
@@ -44,6 +44,10 @@ Catalog Tool keeps track of all the running Lambda ASP.NET Core Applications on 
 
 ```
 dotnet tool install -g AWSLambda.AspNetCoreAppMesh.Catalog
+
+/* or to update */
+
+dotnet tool update -g AWSLambda.AspNetCoreAppMesh.Catalog
 ```
 
 Run the Catalog Tool
