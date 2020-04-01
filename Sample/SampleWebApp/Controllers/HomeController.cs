@@ -2,13 +2,13 @@
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Model;
 using AWSLambda.AspNetCoreAppMesh;
-using AWSLambda.AspNetCoreAppMesh.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SampleWebApp.Controllers
@@ -37,17 +37,17 @@ namespace SampleWebApp.Controllers
                 Path = "/home/hello"
             };
 
-            using (var payloadStream = new MemoryStream())
-            {
-                JsonUtil.SerializeAndLeaveOpen(payloadStream, apiGatewayReq);
-                payloadStream.Position = 0;
+            using var payloadStream = new MemoryStream();
 
-                invokeReq.PayloadStream = payloadStream;
+            await JsonSerializer.SerializeAsync(payloadStream, apiGatewayReq);
+            
+            payloadStream.Position = 0;
 
-                var resp = await invokeReq.RouteAPIGatewayProxyRequestLocally();
+            invokeReq.PayloadStream = payloadStream;
 
-                return Content(resp.Body);
-            }
+            var resp = await invokeReq.RouteAPIGatewayProxyRequestLocally();
+
+            return Content(resp.Body);
         }
     }
 }
