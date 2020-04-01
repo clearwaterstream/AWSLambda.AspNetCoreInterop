@@ -11,7 +11,7 @@
     <PackageTags>aws, lambda, interop, app mesh, microservice communication, catalog, aspdotnet</PackageTags>
     <Description>Catalog component to support registration of AWS Lambda functions running on the local machine</Description>
     <RepositoryUrl>https://github.com/clearwaterstream/aws-lambda-aspdotnetcore-appmesh.git</RepositoryUrl>
-    <PackageReleaseNotes>v1.0.6.1 - Updated for .NET Core 3.1 (https://aws.amazon.com/blogs/compute/announcing-aws-lambda-supports-for-net-core-3-1/)
+    <PackageReleaseNotes>v1.0.6.2 - Updated for .NET Core 3.1 (https://aws.amazon.com/blogs/compute/announcing-aws-lambda-supports-for-net-core-3-1/)
 v1.0.6 - Removed Razor pages as they were causing issue when running the tool. Tool pkg size reduced.
 v1.0.5 - Added support for saving/restoring previously used args (such as --urls)
 v1.0.4 - Bumped version due to collision with "1.0.3-alpha"
@@ -23,7 +23,7 @@ v1.0.0 - Initial Release</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/clearwaterstream/aws-lambda-aspdotnetcore-appmesh</PackageProjectUrl>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <Copyright>Copyright (c) $([System.DateTime]::Now.Year) Igor Krupin</Copyright>
-    <Version>1.0.6.1</Version>
+    <Version>1.0.6.2</Version>
     <PackageIcon>nuget_icon.png</PackageIcon>
   </PropertyGroup>
 
