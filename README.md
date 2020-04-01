@@ -59,7 +59,7 @@ The `--urls` param is optional. The tool will listen on port 5000 and 5001 by de
 
 Once the Catalog Tool is running, your ASP.NET Core applications will be able to register themselves with the catalog. Ensure the catalog url is resolvable and reachable by your applications.
 
-See full [Catalog Tool Documentation](https://github.com/clearwaterstream/aws-lambda-aspdotnetcore-appmesh/tree/master/src/AWSLambda.AspNetCoreAppMesh.Catalog)
+See full [Catalog Tool Documentation](https://github.com/clearwaterstream/aws-lambda-aspdotnetcore-appmesh/tree/core31/src/AWSLambda.AspNetCoreAppMesh.Catalog)
 
 ### Configuring Your ASP.NET Core Application to route `InvokeRequest` objects locally
 
