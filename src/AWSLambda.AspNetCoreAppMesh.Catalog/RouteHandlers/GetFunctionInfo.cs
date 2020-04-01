@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Text.Json;
 using System.Threading.Tasks;
-using AWSLambda.AspNetCoreAppMesh.Util;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -15,7 +15,7 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog.RouteHandlers
             this.logger = logger;
         }
 
-        public Task Invoke(HttpContext httpContext)
+        public async Task Invoke(HttpContext httpContext)
         {
             var functionName = httpContext.Request.Query["lambdaName"];
 
@@ -27,15 +27,13 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog.RouteHandlers
 
                 logger.LogError($"Function {functionName} has not been registered.");
 
-                return Task.CompletedTask;
+                return;
             }
 
             httpContext.Response.StatusCode = 200;
             httpContext.Response.Headers["Content-Type"] = "application/json";
 
-            JsonUtil.SerializeAndLeaveOpen(httpContext.Response.Body, opts);
-
-            return Task.CompletedTask;
+            await JsonSerializer.SerializeAsync(httpContext.Response.Body, opts);
         }
     }
 }

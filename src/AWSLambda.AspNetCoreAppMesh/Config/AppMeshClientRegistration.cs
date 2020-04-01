@@ -44,6 +44,7 @@ namespace Microsoft.AspNetCore.Hosting
 {
     using Microsoft.AspNetCore.Hosting.Server;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
 
     public static class LambdaAppMeshClientAppFeature
     {
@@ -72,7 +73,7 @@ namespace Microsoft.AspNetCore.Hosting
             return app;
         }
 
-        public static IApplicationBuilder HandleIncomingAWSLambdaInvokeRequests(this IApplicationBuilder app, IHostingEnvironment env)
+        public static IApplicationBuilder HandleIncomingAWSLambdaInvokeRequests(this IApplicationBuilder app, IWebHostEnvironment env)
         {
             var server = app.ApplicationServices.GetService<IServer>();
 

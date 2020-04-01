@@ -1,11 +1,11 @@
 ﻿using AWSLambda.AspNetCoreAppMesh.Config;
-using AWSLambda.AspNetCoreAppMesh.Util;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace AWSLambda.AspNetCoreAppMesh.Catalog.RouteHandlers
@@ -23,7 +23,7 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog.RouteHandlers
         {
             var request = httpContext.Request;
 
-            var opts = JsonUtil.Deserialize<LambdaAppMeshOptions>(request.Body);
+            var opts = await JsonSerializer.DeserializeAsync<LambdaAppMeshOptions>(request.Body);
 
             Registrar.Instance.RegisterFunction(opts);
 

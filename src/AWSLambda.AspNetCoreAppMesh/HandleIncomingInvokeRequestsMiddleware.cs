@@ -1,7 +1,6 @@
 ﻿using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.TestUtilities;
 using AWSLambda.AspNetCoreAppMesh.Config;
-using AWSLambda.AspNetCoreAppMesh.Util;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -11,6 +10,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using System.Text.Json;
 
 namespace AWSLambda.AspNetCoreAppMesh
 {
@@ -68,7 +68,7 @@ namespace AWSLambda.AspNetCoreAppMesh
 
                 context.Response.StatusCode = 500;
 
-                await context.Response.WriteAsync($"{errorMsg}: {ex.ToString()}");
+                await context.Response.WriteAsync($"{errorMsg}: {ex}");
             }
         }
 
@@ -79,7 +79,7 @@ namespace AWSLambda.AspNetCoreAppMesh
             if (activator == null)
                 throw new AppMeshException($"Ensure AddAPIGatewayProxyFunctionEntryPoint() has been called in ConfigureServices() method of your Startup.");
 
-            var apiGatewayReq = JsonUtil.Deserialize<APIGatewayProxyRequest>(context.Request.Body);
+            var apiGatewayReq = await JsonSerializer.DeserializeAsync<APIGatewayProxyRequest>(context.Request.Body);
 
             InjectPairingToken(apiGatewayReq);
 
@@ -96,7 +96,7 @@ namespace AWSLambda.AspNetCoreAppMesh
 
             context.Response.StatusCode = resp.StatusCode;
 
-            JsonUtil.SerializeAndLeaveOpen(context.Response.Body, resp);
+            await JsonSerializer.SerializeAsync(context.Response.Body, resp);
         }
 
         // this is needed for IIS only ...

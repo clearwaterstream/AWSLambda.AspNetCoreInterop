@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace AWSLambda.AspNetCoreAppMesh.Catalog.Config
@@ -12,9 +13,9 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog.Config
     {
         static readonly string settingsFilePath = "settings.json";
 
-        public static AppSettings Load(string[] args)
+        public static async Task<AppSettings> Load(string[] args)
         {
-            var settings = Load();
+            var settings = await Load();
 
             // no current settings
             if(settings == null)
@@ -35,12 +36,12 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog.Config
                 return settings;
             }
 
-            Console.WriteLine($"[{DateTime.Now.ToString("HH:mm:ss.ffff")}] Using previously saved application settings");
+            Console.WriteLine($"[{DateTime.Now:HH:mm:ss.ffff}] Using previously saved application settings");
 
             return settings;
         }
 
-        public static void Save(AppSettings settings)
+        public static async Task Save(AppSettings settings)
         {
             try
             {
@@ -48,17 +49,17 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog.Config
 
                 using var fs = new IsolatedStorageFileStream(settingsFilePath, FileMode.Create, FileAccess.Write, isf);
 
-                JsonUtil.Serialize(fs, settings);
+                await JsonSerializer.SerializeAsync(fs, settings);
             }
             catch (Exception ex)
             {
                 Console.Error.WriteLine($"Error saving app settings to isolated storage: {ex.ToString()}");
             }
 
-            Console.WriteLine($"[{DateTime.Now.ToString("HH:mm:ss.ffff")}] Application settings saved");
+            Console.WriteLine($"[{DateTime.Now:HH:mm:ss.ffff}] Application settings saved");
         }
 
-        static AppSettings Load()
+        static async Task<AppSettings> Load()
         {
             try
             {
@@ -69,7 +70,7 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog.Config
 
                 using var fs = new IsolatedStorageFileStream(settingsFilePath, FileMode.Open, FileAccess.Read, isf);
 
-                var settings = JsonUtil.Deserialize<AppSettings>(fs);
+                var settings = await JsonSerializer.DeserializeAsync<AppSettings>(fs);
 
                 return settings;
             }

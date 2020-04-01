@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>Igor Krupin</Authors>
     <PackageProjectUrl>https://github.com/clearwaterstream/aws-lambda-aspdotnetcore-appmesh</PackageProjectUrl>
@@ -26,24 +26,18 @@ v1.0.1 - Intital Release</PackageReleaseNotes>
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\Shared\JsonUtil.cs" Link="Util\JsonUtil.cs" />
     <Compile Include="..\Shared\LambdaAppMeshOptions.cs" Link="Util\LambdaAppMeshOptions.cs" />
     <Compile Include="..\Shared\UriUtil.cs" Link="Util\UriUtil.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="4.1.0" />
+    <PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="5.0.0" />
     <PackageReference Include="Amazon.Lambda.TestUtilities" Version="1.1.0" />
-    <PackageReference Include="AWSSDK.Lambda" Version="3.3.106.14" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="2.1.1" />
+    <PackageReference Include="AWSSDK.Lambda" Version="3.3.109.1" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Util\" />
   </ItemGroup>
 
 </Project>

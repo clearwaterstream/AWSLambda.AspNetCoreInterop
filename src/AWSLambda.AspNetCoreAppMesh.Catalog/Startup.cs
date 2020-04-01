@@ -4,16 +4,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.Extensions.Hosting;
+using System.Linq;
+using AWSLambda.AspNetCoreAppMesh.Catalog.RouteHandlers;
 
 namespace AWSLambda.AspNetCoreAppMesh.Catalog
 {
-    using AWSLambda.AspNetCoreAppMesh.Util;
-    using Microsoft.AspNetCore.Hosting.Server.Features;
-    using Microsoft.AspNetCore.Server.Kestrel.Core;
-    using Microsoft.Extensions.Hosting;
-    using RouteHandlers;
-    using System.Linq;
-
     public class Startup
     {           
         public Startup(IConfiguration configuration)
@@ -25,11 +22,6 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<KestrelServerOptions>(options =>
-            {
-                options.AllowSynchronousIO = true;
-            });
-
             services.AddLogging(opt => opt.AddConsole(c =>
             {
                 c.TimestampFormat = "[HH:mm:ss.ffff] ";
@@ -48,7 +40,7 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
 
             if(appLifetime != null)
             {
-                appLifetime.ApplicationStopping.Register(Program.OnShuttingDown);
+                appLifetime.ApplicationStopping.Register(async () => await Program.OnShuttingDown());
             }
             
             app.UseExceptionHandler(new ExceptionHandlerOptions() { ExceptionHandler = GlobalErrorHandler.ExceptionHandlerDelegate });

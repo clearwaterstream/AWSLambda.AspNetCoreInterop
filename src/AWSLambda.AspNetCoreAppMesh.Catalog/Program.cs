@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace AWSLambda.AspNetCoreAppMesh.Catalog
 {
@@ -17,11 +18,11 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
 
         static AppSettings settings;
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             ConsoleUtil.WriteProgramTitle(Title);
 
-            settings = AppSettingsResolver.Load(args);
+            settings = await AppSettingsResolver.Load(args);
 
             if(settings != null)
             {
@@ -42,14 +43,13 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
         {
             var builder = CreateHostBuilder(args);
 
-            using (var host = builder.Build())
-            {
-                logger = host.Services.GetService<ILogger<Program>>();
+            using var host = builder.Build();
+            
+            logger = host.Services.GetService<ILogger<Program>>();
 
-                logger.LogInformation("Catalog bootstrapped");
+            logger.LogInformation("Catalog bootstrapped");
 
-                host.Run();
-            }
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -59,11 +59,11 @@ namespace AWSLambda.AspNetCoreAppMesh.Catalog
                     webBuilder.UseStartup<Startup>();
                 });
 
-        public static void OnShuttingDown()
+        public static async Task OnShuttingDown()
         {
             if(settings != null)
             {
-                AppSettingsResolver.Save(settings);
+                await AppSettingsResolver.Save(settings);
             }
         }
     }

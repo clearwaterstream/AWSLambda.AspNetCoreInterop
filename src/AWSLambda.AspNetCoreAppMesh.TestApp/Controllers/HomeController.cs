@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace AWSLambda.AspNetCoreAppMesh.TestApp.Controllers
@@ -26,9 +27,11 @@ namespace AWSLambda.AspNetCoreAppMesh.TestApp.Controllers
         {
             // call Hello() via routing the InvokeRequest locally (over http)
 
-            var invokeReq = new InvokeRequest();
-            invokeReq.FunctionName = "test";
-            invokeReq.InvocationType = InvocationType.RequestResponse;
+            var invokeReq = new InvokeRequest
+            {
+                FunctionName = "test",
+                InvocationType = InvocationType.RequestResponse
+            };
 
             var apiGatewayReq = new APIGatewayProxyRequest()
             {
@@ -36,17 +39,16 @@ namespace AWSLambda.AspNetCoreAppMesh.TestApp.Controllers
                 Path = "/home/hello"
             };
 
-            using (var payloadStream = new MemoryStream())
-            {
-                JsonUtil.SerializeAndLeaveOpen(payloadStream, apiGatewayReq);
-                payloadStream.Position = 0;
+            using var payloadStream = new MemoryStream();
 
-                invokeReq.PayloadStream = payloadStream;
+            await JsonSerializer.SerializeAsync(payloadStream, apiGatewayReq);
+            payloadStream.Position = 0;
 
-                var resp = await invokeReq.RouteAPIGatewayProxyRequestLocally();
+            invokeReq.PayloadStream = payloadStream;
 
-                return Content(resp.Body);
-            }
+            var resp = await invokeReq.RouteAPIGatewayProxyRequestLocally();
+
+            return Content(resp.Body);
         }
     }
 }

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,7 +39,7 @@ namespace AWSLambda.AspNetCoreAppMesh
 
         public async Task<APIGatewayProxyResponse> MarshallAPIGatewayProxyRequest(InvokeRequest invokeRequest, CancellationToken cancellationToken)
         {
-            var resp = await Invoke(invokeRequest, "APIGatewayProxyRequest", (s) => JsonUtil.Deserialize<APIGatewayProxyResponse>(s), cancellationToken);
+            var resp = await Invoke<APIGatewayProxyResponse>(invokeRequest, "APIGatewayProxyRequest", cancellationToken);
 
             if (resp.payload == null)
             {
@@ -57,7 +58,7 @@ namespace AWSLambda.AspNetCoreAppMesh
             throw new NotImplementedException();
         }
 
-        async Task<(int statusCode, TResp payload)> Invoke<TResp>(InvokeRequest invokeRequest, string payloadType, Func<Stream, TResp> deserializePayload, CancellationToken cancellationToken)
+        async Task<(int statusCode, TResp payload)> Invoke<TResp>(InvokeRequest invokeRequest, string payloadType, CancellationToken cancellationToken)
         {
             var destLambdaOpts = await catalogAgent.GetFunctionInfo(invokeRequest.FunctionName);
 
@@ -65,25 +66,22 @@ namespace AWSLambda.AspNetCoreAppMesh
 
             var url = $"{invokeHandlerUrl}?lambdaName={invokeRequest.FunctionName}&invocationType={invokeRequest.InvocationType}&payloadType={payloadType}&source={appMeshOptions.LambdaName}";
 
-            using (var reqMsg = new HttpRequestMessage(HttpMethod.Post, url))
+            using var reqMsg = new HttpRequestMessage(HttpMethod.Post, url);
+            
+            using (reqMsg.Content = CreateContent(invokeRequest))
             {
-                using (reqMsg.Content = CreateContent(invokeRequest))
+                using var resp = await httpClient.SendAsync(reqMsg, cancellationToken);
+                
+                if (!resp.IsSuccessStatusCode)
                 {
-                    using (var resp = await httpClient.SendAsync(reqMsg, cancellationToken))
-                    {
-                        if (!resp.IsSuccessStatusCode)
-                        {
-                            return ((int)resp.StatusCode, default);
-                        }
-
-                        using (var respStream = await resp.Content.ReadAsStreamAsync())
-                        {
-                            var deserialized = deserializePayload(respStream);
-
-                            return ((int)resp.StatusCode, deserialized);
-                        }
-                    }
+                    return ((int)resp.StatusCode, default);
                 }
+
+                using var respStream = await resp.Content.ReadAsStreamAsync();
+
+                var deserialized = await JsonSerializer.DeserializeAsync<TResp>(respStream, cancellationToken: cancellationToken);
+
+                return ((int)resp.StatusCode, deserialized);
             }
         }
 
